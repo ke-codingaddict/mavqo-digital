@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Download, Search } from "lucide-react";
@@ -11,6 +12,7 @@ import { interestLabel } from "@/content/form-options";
 import { cn, formatDate } from "@/lib/utils";
 import { LeadStatusBadge } from "@/components/admin/badges";
 import { buttonClasses } from "@/components/ui/button";
+import { AdminPageFallback } from "@/components/admin/page-fallback";
 
 export const metadata: Metadata = { title: "Leads" };
 
@@ -43,7 +45,20 @@ function formatDuration(ms: number) {
   return `${(hours / 24).toFixed(1)} days`;
 }
 
-export default async function LeadsPage({ searchParams }: { searchParams: SearchParams }) {
+/**
+ * The session check and data reads happen inside a Suspense boundary owned by
+ * this page, so client navigations between admin pages stream instead of
+ * blocking (the layout's boundary only covers full page loads).
+ */
+export default function LeadsPage({ searchParams }: { searchParams: SearchParams }) {
+  return (
+    <Suspense fallback={<AdminPageFallback />}>
+      <LeadsContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function LeadsContent({ searchParams }: { searchParams: SearchParams }) {
   const user = await requireUser("leads:view");
   const params = await searchParams;
 

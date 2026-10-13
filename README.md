@@ -59,6 +59,7 @@ npm run lint && npm run typecheck
 
 1. Provision PostgreSQL (e.g. Neon, Supabase, or managed Postgres) with automated backups.
 2. Set the environment variables from `.env.example` — `APP_ENV=production` and an `https://` `APP_BASE_URL` on production only; use `APP_ENV=staging` elsewhere so it's never indexed.
+   Always run behind a reverse proxy (Vercel, nginx, Caddy…) and set `TRUSTED_PROXY_HOPS` to the number of proxies in front of the app — sign-in throttling and form rate limits key on the client IP, which can be forged if this is wrong.
 3. Build: `npm ci && npm run db:deploy && npm run build`, then `npm start` (or deploy to Vercel / any Node host).
 4. Create the first admin with `npm run admin:create` against the production database.
 5. Verify a Resend sending domain, then set `RESEND_API_KEY`, `EMAIL_FROM` and `LEAD_NOTIFICATION_EMAIL`.

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,6 +13,7 @@ import { interestLabel } from "@/content/form-options";
 import { formatDate } from "@/lib/utils";
 import { LeadStatusBadge } from "@/components/admin/badges";
 import { buttonClasses } from "@/components/ui/button";
+import { AdminPageFallback } from "@/components/admin/page-fallback";
 import { deleteLead } from "../../../actions";
 import { LeadUpdateForm } from "./lead-update-form";
 
@@ -31,7 +33,20 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
+/**
+ * The session check and data reads happen inside a Suspense boundary owned by
+ * this page, so client navigations between admin pages stream instead of
+ * blocking (the layout's boundary only covers full page loads).
+ */
+export default function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  return (
+    <Suspense fallback={<AdminPageFallback />}>
+      <LeadDetail params={params} />
+    </Suspense>
+  );
+}
+
+async function LeadDetail({ params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser("leads:view");
   const id = z.uuid().safeParse((await params).id);
   if (!id.success) notFound();
