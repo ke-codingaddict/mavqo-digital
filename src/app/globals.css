@@ -1,26 +1,200 @@
 @import "tailwindcss";
 
+/* Dark mode follows the data-theme attribute set before paint (see ThemeScript). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Mavqo Digital design tokens (spec §5.1), with light and dark values.
+ * Brand: navy #12233F + teal #18B6A4, warmed with a paper canvas and a sun accent.
+ * `teal-ink` is the text-safe teal (WCAG AA on canvas in both themes).
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --canvas: #fbf8f3;
+  --surface: #ffffff;
+  --surface-2: #f3eee5;
+  --heading: #0f1e36;
+  --ink: #3a4659;
+  --ink-soft: #667085;
+  --line: #e6dfd3;
+  --line-strong: #d4cbbc;
+
+  --navy: #12233f;
+  --teal: #18b6a4;
+  --teal-ink: #0a7569;
+  --teal-wash: #e2f4f0;
+  --sun: #f5b83d;
+  --sun-wash: #fdf1d8;
+
+  --primary: #12233f;
+  --primary-hover: #1d3459;
+  --on-primary: #ffffff;
+  --inverse: #12233f;
+  --on-inverse: #ffffff;
+  --on-inverse-soft: rgb(255 255 255 / 0.72);
+
+  --danger: #b42318;
+  --danger-wash: #fef3f2;
+  --success: #16794b;
+  --success-wash: #e9f8ef;
+  --warning: #93370d;
+  --warning-wash: #fff6e0;
+
+  --shadow-sm: 0 1px 2px rgb(15 30 54 / 0.05);
+  --shadow-md: 0 1px 2px rgb(15 30 54 / 0.04), 0 8px 24px -6px rgb(15 30 54 / 0.12);
+  --shadow-lg: 0 2px 6px rgb(15 30 54 / 0.05), 0 24px 48px -12px rgb(15 30 54 / 0.22);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #0a111d;
+  --surface: #111b2c;
+  --surface-2: #0d1624;
+  --heading: #f2f5f9;
+  --ink: #c2cad7;
+  --ink-soft: #8d99ad;
+  --line: #1f2b40;
+  --line-strong: #2d3b55;
+
+  --teal-ink: #4fd6c4;
+  --teal-wash: rgb(24 182 164 / 0.14);
+  --sun-wash: rgb(245 184 61 / 0.14);
+
+  --primary: #18b6a4;
+  --primary-hover: #2bc9b6;
+  --on-primary: #08131f;
+  --inverse: #13213a;
+  --on-inverse: #f2f5f9;
+  --on-inverse-soft: rgb(242 245 249 / 0.7);
+
+  --danger: #f97066;
+  --danger-wash: rgb(240 68 56 / 0.12);
+  --success: #47cd89;
+  --success-wash: rgb(71 205 137 / 0.12);
+  --warning: #fdb022;
+  --warning-wash: rgb(253 176 34 / 0.12);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -6px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 2px 6px rgb(0 0 0 / 0.3), 0 24px 48px -12px rgb(0 0 0 / 0.6);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-heading: var(--heading);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-navy: var(--navy);
+  --color-teal: var(--teal);
+  --color-teal-ink: var(--teal-ink);
+  --color-teal-wash: var(--teal-wash);
+  --color-sun: var(--sun);
+  --color-sun-wash: var(--sun-wash);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
+  --color-inverse: var(--inverse);
+  --color-on-inverse: var(--on-inverse);
+  --color-on-inverse-soft: var(--on-inverse-soft);
+  --color-danger: var(--danger);
+  --color-danger-wash: var(--danger-wash);
+  --color-success: var(--success);
+  --color-success-wash: var(--success-wash);
+  --color-warning: var(--warning);
+  --color-warning-wash: var(--warning-wash);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  /* System font stack: SF Pro on iPhone/iPad/Mac, Segoe UI on Windows, Roboto on Android.
+     Nothing is downloaded, so text renders instantly. (SF Pro's licence doesn't allow web hosting.) */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  --font-weight-black: 700;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+    background: var(--canvas);
+  }
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  h1, h2, h3, h4 {
+    color: var(--heading);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--teal); color: #08131f; }
+  :focus-visible {
+    outline: 3px solid var(--teal);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Type scale (spec §5.2) — system font (SF Pro on Apple devices), 800 for display, 700 for headings */
+  .text-display { font-size: clamp(2.25rem, 1.7rem + 2.3vw, 3.5rem); line-height: 1.08; font-weight: 700; letter-spacing: -0.03em; }
+  .text-h1 { font-size: clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem); line-height: 1.12; font-weight: 700; letter-spacing: -0.025em; }
+  .text-h2 { font-size: clamp(1.625rem, 1.35rem + 1.1vw, 2.25rem); line-height: 1.15; font-weight: 700; letter-spacing: -0.022em; }
+  .text-h3 { font-size: 1.1875rem; line-height: 1.3; font-weight: 650; letter-spacing: -0.01em; }
+  .text-lead { font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem); line-height: 1.6; }
+
+  /* Small section label with a short rule — replaces generic uppercase eyebrows */
+  .kicker {
+    display: inline-flex; align-items: center; gap: 0.625rem;
+    font-size: 0.9375rem; font-weight: 700; color: var(--teal-ink);
+  }
+  .kicker::before { content: ""; width: 1.5rem; height: 2px; border-radius: 2px; background: currentColor; }
+
+  /* Hand-drawn style highlight under a key word */
+  .highlight {
+    background-image: linear-gradient(transparent 62%, color-mix(in oklab, var(--sun) 70%, transparent) 62%, color-mix(in oklab, var(--sun) 70%, transparent) 92%, transparent 92%);
+    padding-inline: 0.06em;
+  }
+  [data-theme="dark"] .highlight {
+    background-image: linear-gradient(transparent 66%, color-mix(in oklab, var(--sun) 45%, transparent) 66%, color-mix(in oklab, var(--sun) 45%, transparent) 90%, transparent 90%);
+  }
+
+  /* Long-form article typography */
+  .prose-mavqo { font-size: 1.0625rem; line-height: 1.8; color: var(--ink); }
+  .prose-mavqo > * + * { margin-top: 1.15em; }
+  .prose-mavqo h2 { font-size: 1.5rem; line-height: 1.25; font-weight: 700; margin-top: 2.1em; }
+  .prose-mavqo h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1.6em; }
+  .prose-mavqo ul { list-style: disc; padding-left: 1.4em; }
+  .prose-mavqo ol { list-style: decimal; padding-left: 1.4em; }
+  .prose-mavqo li + li { margin-top: 0.45em; }
+  .prose-mavqo li::marker { color: var(--teal); font-weight: 700; }
+  .prose-mavqo a { color: var(--teal-ink); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  .prose-mavqo strong { color: var(--heading); }
 }

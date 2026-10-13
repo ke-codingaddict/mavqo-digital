@@ -1,0 +1,134 @@
+import type { BlogPost } from "../types";
+
+export const posts: BlogPost[] = [
+  {
+    slug: "how-to-choose-school-management-system-kenya",
+    title: "How to Choose a School Management System in Kenya: A Practical Checklist",
+    excerpt:
+      "Before you sign up for any school management software, use this checklist to compare systems on what actually matters: fees, exams, data, training and support.",
+    category: "Education",
+    image: { src: "/images/school-student.jpg", alt: "Student writing at a classroom desk" },
+    author: "Mavqo Digital Team",
+    publishedAt: "2026-10-13",
+    readingMinutes: 6,
+    relatedHref: { label: "See our School Management System", href: "/software/school-management-system-kenya/" },
+    seoTitle: "How to Choose a School Management System in Kenya (Checklist)",
+    seoDescription:
+      "A practical checklist for choosing school management software in Kenya: fees, exams, parent communication, data migration, training, security and support.",
+    published: true,
+    body: [
+      { type: "p", text: "A school management system can save your administrators hours every week — or become an expensive tool nobody uses. The difference usually comes down to how carefully the system was chosen. This checklist will help you compare options on the things that matter day to day in a Kenyan school." },
+      { type: "h2", text: "1. Start with your biggest problems, not the feature list" },
+      { type: "p", text: "Every vendor will show you a long list of modules. Before you look at any of them, write down the three to five problems that cost your school the most time or money today. For many schools these are:" },
+      { type: "ul", items: ["Tracking fee balances and issuing receipts", "Preparing learner progress reports at the end of each term", "Keeping accurate, up-to-date student records", "Communicating quickly with parents"] },
+      { type: "p", text: "Use these problems to judge every system you see. A system that solves your top three problems well is better than one that does fifty things you don't need." },
+      { type: "h2", text: "2. Look closely at fees and payments" },
+      { type: "p", text: "Fee management is where most schools feel the impact first. During a demo, ask the vendor to show you — with real steps, not slides — how to:" },
+      { type: "ul", items: ["Set up different fee structures for different classes and terms", "Record a payment and produce a receipt", "See every student with an outstanding balance", "Handle partial payments, bursaries and discounts"] },
+      { type: "p", text: "If the system claims to integrate with a payment method you rely on, ask to see that integration working. Don't rely on a promise that it is \"coming soon\"." },
+      { type: "h2", text: "3. Check it fits the CBC structure" },
+      { type: "p", text: "Kenya's Competency-Based Curriculum (CBC) organizes learning into Pre-primary (PP1–PP2), Primary School (Grades 1–6), Junior School (Grades 7–9) and Senior School (Grades 10–12). A system designed around the old 8-4-4 classes and exam rankings will create extra work for your teachers." },
+      { type: "ul", items: ["Can it be set up with your grades, streams and learning areas?", "How are assessment results recorded, and can it follow the performance levels your teachers use?", "How long does it take to produce learner progress reports for a whole grade?", "Can it handle learners moving between Junior School and Senior School?"] },
+      { type: "p", text: "The best test is to bring a sample of your own assessment records to the demo and see whether the system can follow them." },
+      { type: "h2", text: "4. Ask about your existing data" },
+      { type: "p", text: "Most schools already have years of records in spreadsheets or other systems. Find out:" },
+      { type: "ul", items: ["Whether the vendor will help import your existing student and fee records", "What format they need the data in", "Who checks the imported data for accuracy before go-live"] },
+      { type: "h2", text: "5. Treat data protection seriously" },
+      { type: "p", text: "Schools hold personal information about children, parents and staff. Kenya's Data Protection Act, 2019 places obligations on organizations that process personal data. Ask any vendor:" },
+      { type: "ul", items: ["Who can access student data, and how access is controlled by role", "Where the data is stored and how it is backed up", "Whether actions in the system are logged", "What happens to your data if you stop using the system"] },
+      { type: "callout", text: "A good vendor will answer these questions clearly and in writing. If the answers are vague, treat that as a warning sign." },
+      { type: "h2", text: "6. Plan for training and adoption" },
+      { type: "p", text: "Software only helps if people use it. Ask what training is included for the bursar, administrators and teachers, and what support is available in the first weeks after go-live, when most questions come up." },
+      { type: "h2", text: "7. Understand the full cost" },
+      { type: "p", text: "Ask for a written quote that shows any set-up fees, licence or subscription costs, training, data migration and ongoing support. Compare the total cost over two or three years rather than just the first payment." },
+      { type: "h2", text: "8. Insist on a live demo" },
+      { type: "p", text: "Finally, never buy from screenshots alone. A live demo, ideally using scenarios from your own school, is the best way to see whether a system will work for you." },
+      { type: "h2", text: "Quick checklist" },
+      { type: "ol", items: ["List your top problems before looking at features", "See fee set-up, payments and balances working live", "Check it fits your CBC grades, assessments and learner reports", "Confirm how existing data will be imported", "Get clear answers on access control, backups and data protection", "Confirm training and post-launch support", "Compare total cost over two to three years", "Don't buy without a live demo"] },
+    ],
+  },
+  {
+    slug: "google-ads-management-fee-vs-ad-spend",
+    title: "Google Ads in Kenya: Management Fees vs Ad Spend, Explained",
+    excerpt:
+      "Confused about what you're paying for when you hire someone to run Google Ads? Here's the difference between ad spend and management fees — and what to ask before you sign.",
+    category: "Digital Marketing",
+    image: { src: "/images/seo.jpg", alt: "Laptop showing an analytics dashboard" },
+    author: "Mavqo Digital Team",
+    publishedAt: "2026-10-13",
+    readingMinutes: 5,
+    relatedHref: { label: "Explore Google Ads Management", href: "/digital-marketing-kenya/google-ads-management-kenya/" },
+    seoTitle: "Google Ads Management Fees vs Ad Spend (Kenya Guide)",
+    seoDescription:
+      "Understand the difference between Google Ads spend and agency management fees, who should own your account, and what to ask before hiring a PPC agency.",
+    published: true,
+    body: [
+      { type: "p", text: "When businesses hire an agency to run Google Ads, one of the most common sources of confusion is what the money actually pays for. There are two separate costs, and understanding them will help you budget properly and compare agencies fairly." },
+      { type: "h2", text: "Ad spend: what you pay Google" },
+      { type: "p", text: "Ad spend is the money that goes to Google when people interact with your ads — for example, when someone clicks a search ad. You set a budget, and Google charges against it based on how your campaigns perform in its auctions." },
+      { type: "p", text: "Ideally, ad spend is billed by Google directly to a payment method on an account your business owns. That way you can see exactly what was spent." },
+      { type: "h2", text: "Management fee: what you pay the agency" },
+      { type: "p", text: "The management fee pays for the expertise and time needed to plan, build, monitor and improve your campaigns. That work typically includes:" },
+      { type: "ul", items: ["Keyword research and choosing which searches to target", "Writing and testing ad copy", "Setting up conversion tracking so you can see which ads produce leads", "Reviewing search terms and excluding irrelevant ones", "Adjusting bids and budgets", "Reporting on results"] },
+      { type: "h2", text: "Why it matters that the two are separate" },
+      { type: "p", text: "When fees and ad spend are bundled into one number, it becomes hard to know how much is actually reaching Google. Keeping them separate gives you transparency: you can see your real cost per lead and judge whether the agency is adding value." },
+      { type: "callout", text: "Ask any agency: \"How much of my monthly payment goes to Google, and how much is your fee?\" You should get a clear answer." },
+      { type: "h2", text: "Who should own the Google Ads account?" },
+      { type: "p", text: "Your business should. If an agency runs ads from its own account and you part ways, you may lose your campaign history and data. Make sure the account is in your business's name and the agency is given access to manage it." },
+      { type: "h2", text: "Conversion tracking comes first" },
+      { type: "p", text: "Without conversion tracking, it's impossible to know whether your ads are producing enquiries or just clicks. Before campaigns launch, make sure form submissions, phone calls and WhatsApp clicks are tracked where possible." },
+      { type: "h2", text: "Questions to ask before you hire" },
+      { type: "ol", items: ["Is your fee separate from ad spend?", "Will the Google Ads account be in my business's name?", "How will you track leads, not just clicks?", "How often will you report, and what will the reports show?", "What happens to the account and data if we stop working together?"] },
+      { type: "p", text: "A trustworthy partner will be comfortable answering all of these clearly — and won't promise guaranteed results, because no one can control Google's auctions." },
+    ],
+  },
+  {
+    slug: "technical-seo-basics-business-website",
+    title: "Technical SEO Basics Every Business Website Needs",
+    excerpt:
+      "Great content can't rank if search engines struggle to crawl your site. These technical SEO basics are the foundation every business website should get right.",
+    category: "SEO",
+    image: { src: "/images/web-design.jpg", alt: "Code on computer screens" },
+    author: "Mavqo Digital Team",
+    publishedAt: "2026-10-13",
+    readingMinutes: 6,
+    relatedHref: { label: "Explore our SEO Services", href: "/digital-marketing-kenya/seo-services-kenya/" },
+    seoTitle: "Technical SEO Basics for Business Websites",
+    seoDescription:
+      "The technical SEO basics every business website needs: indexing, sitemaps, page titles, mobile usability, speed, HTTPS, redirects and structured data.",
+    published: true,
+    body: [
+      { type: "p", text: "Search engine optimization is often described in terms of keywords and content. Those matter — but they rest on a technical foundation. If search engines can't crawl, understand and trust your website, even excellent content will struggle to be found." },
+      { type: "h2", text: "1. Make sure your important pages can be indexed" },
+      { type: "p", text: "Use Google Search Console to see which of your pages are indexed and why others aren't. Common problems include pages accidentally marked \"noindex\", pages blocked in robots.txt, and duplicate pages competing with each other." },
+      { type: "h2", text: "2. Submit an XML sitemap" },
+      { type: "p", text: "An XML sitemap lists the pages you want search engines to find. Most modern website platforms can generate one automatically. Submit it in Search Console and keep it free of redirected, broken or private pages." },
+      { type: "h2", text: "3. Give every page a unique title and description" },
+      { type: "p", text: "Each page should have a unique title tag that describes its content, and a meta description that encourages people to click. Duplicate titles across many pages make it harder for search engines to know which page to show." },
+      { type: "h2", text: "4. Use one clear H1 per page" },
+      { type: "p", text: "The main heading should tell visitors and search engines what the page is about. Use subheadings (H2, H3) to structure the rest of the content logically." },
+      { type: "h2", text: "5. Be mobile-friendly" },
+      { type: "p", text: "Many of your visitors will be on a phone. Text should be readable without zooming, buttons easy to tap and layouts should fit the screen. Google primarily uses the mobile version of your site for indexing." },
+      { type: "h2", text: "6. Make it fast" },
+      { type: "p", text: "Slow pages frustrate visitors and can hurt performance in search. Google's Core Web Vitals measure loading (LCP), responsiveness (INP) and visual stability (CLS). The usual culprits are oversized images, too much JavaScript and slow hosting." },
+      { type: "ul", items: ["Compress and correctly size images", "Remove plugins and scripts you don't need", "Use caching and a reliable host"] },
+      { type: "h2", text: "7. Use HTTPS everywhere" },
+      { type: "p", text: "HTTPS protects your visitors' data and is expected by browsers and search engines. Make sure every version of your site redirects to the secure HTTPS version." },
+      { type: "h2", text: "8. Redirect old URLs when you change them" },
+      { type: "p", text: "When a page moves or is renamed, set up a permanent (301) redirect from the old address to the new one. This is especially important during website redesigns — skipping it is one of the most common reasons sites lose traffic after a relaunch." },
+      { type: "h2", text: "9. Add structured data where it fits" },
+      { type: "p", text: "Structured data helps search engines understand things like your organization, articles and breadcrumbs. It must accurately reflect what is visible on the page — never add reviews, ratings or details that aren't real." },
+      { type: "callout", text: "Technical SEO isn't a one-time task. Check Search Console regularly for new issues, especially after changes to your website." },
+    ],
+  },
+];
+
+export function getPublishedPosts() {
+  return posts
+    .filter((p) => p.published)
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+}
+
+export function getPost(slug: string) {
+  return getPublishedPosts().find((p) => p.slug === slug);
+}

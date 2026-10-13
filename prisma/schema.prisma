@@ -1,0 +1,133 @@
+// Mavqo Digital — database schema (spec §9).
+// Products, services and blog posts live in typed content files (src/content)
+// for Phase 1; they move into the database when the admin CMS (Phase 2) needs it.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EnquiryType {
+  contact
+  demo
+  quote
+  marketing
+  waitlist
+}
+
+enum LeadStatus {
+  new
+  contacted
+  qualified
+  proposal_sent
+  won
+  lost
+}
+
+enum UserRole {
+  admin
+  sales
+}
+
+model Lead {
+  id                String      @id @default(uuid()) @db.Uuid
+  reference         String      @unique @db.VarChar(16)
+  enquiryType       EnquiryType @map("enquiry_type")
+  status            LeadStatus  @default(new)
+
+  name              String      @db.VarChar(160)
+  email             String?     @db.VarChar(254)
+  phone             String?     @db.VarChar(40)
+  organization      String?     @db.VarChar(200)
+  preferredContact  String?     @map("preferred_contact") @db.VarChar(20)
+
+  productInterest   String?     @map("product_interest") @db.VarChar(80)
+  serviceInterest   String?     @map("service_interest") @db.VarChar(80)
+  organizationSize  String?     @map("organization_size") @db.VarChar(40)
+  websiteUrl        String?     @map("website_url") @db.VarChar(300)
+  objective         String?     @db.VarChar(300)
+  budgetRange       String?     @map("budget_range") @db.VarChar(40)
+  timeline          String?     @db.VarChar(40)
+  message           String?     @db.Text
+
+  // Attribution: which page and campaign produced this lead.
+  sourcePage        String?     @map("source_page") @db.VarChar(300)
+  referrer          String?     @db.VarChar(300)
+  utmSource         String?     @map("utm_source") @db.VarChar(100)
+  utmMedium         String?     @map("utm_medium") @db.VarChar(100)
+  utmCampaign       String?     @map("utm_campaign") @db.VarChar(150)
+  utmTerm           String?     @map("utm_term") @db.VarChar(150)
+  utmContent        String?     @map("utm_content") @db.VarChar(150)
+  gclid             String?     @db.VarChar(200)
+
+  // Salted hash only — the raw IP is never stored. Used for rate limiting.
+  ipHash            String?     @map("ip_hash") @db.VarChar(64)
+  consentGiven      Boolean     @default(false) @map("consent_given")
+
+  internalNotes     String?     @map("internal_notes") @db.Text
+  notifiedAt        DateTime?   @map("notified_at") @db.Timestamptz
+  firstContactedAt  DateTime?   @map("first_contacted_at") @db.Timestamptz
+  createdAt         DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, createdAt])
+  @@index([enquiryType, createdAt])
+  @@index([ipHash, createdAt])
+  @@map("leads")
+}
+
+model User {
+  id               String     @id @default(uuid()) @db.Uuid
+  email            String     @unique @db.VarChar(254)
+  name             String     @db.VarChar(160)
+  passwordHash     String     @map("password_hash") @db.VarChar(255)
+  role             UserRole   @default(sales)
+  active           Boolean    @default(true)
+  failedLogins     Int        @default(0) @map("failed_logins")
+  lockedUntil      DateTime?  @map("locked_until") @db.Timestamptz
+  lastLoginAt      DateTime?  @map("last_login_at") @db.Timestamptz
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+
+  auditLogs        AuditLog[]
+  sessions         AdminSession[]
+
+  @@map("users")
+}
+
+/// Server-side record of each admin sign-in, so sessions can be revoked and
+/// expire after inactivity regardless of what the browser holds.
+model AdminSession {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastSeenAt  DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz
+  expiresAt   DateTime  @map("expires_at") @db.Timestamptz
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz
+  ipHash      String?   @map("ip_hash") @db.VarChar(64)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("admin_sessions")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actorId     String?  @map("actor_id") @db.Uuid
+  actor       User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action      String   @db.VarChar(60)
+  entityType  String?  @map("entity_type") @db.VarChar(40)
+  entityId    String?  @map("entity_id") @db.VarChar(64)
+  metadata    Json?
+  ipHash      String?  @map("ip_hash") @db.VarChar(64)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([action, createdAt])
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}
