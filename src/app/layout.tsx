@@ -1,12 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import { siteConfig } from "@/config/site";
 import { THEME_STORAGE_KEY } from "@/components/theme/constants";
+import { getAnalyticsSettings } from "@/lib/settings";
 import "./globals.css";
 
 
 const isProduction = process.env.APP_ENV === "production";
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  // Search Console token is managed in Admin → Settings (cached until changed).
+  const { searchConsoleToken } = await getAnalyticsSettings();
+  return { ...baseMetadata, verification: searchConsoleToken ? { google: searchConsoleToken } : undefined };
+}
+
+const baseMetadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: `${siteConfig.name} — Business Software, Websites & Digital Marketing in Kenya`,
@@ -17,9 +24,6 @@ export const metadata: Metadata = {
   // Staging and development are never indexed (spec §11.2).
   robots: isProduction ? { index: true, follow: true } : { index: false, follow: false },
   formatDetection: { telephone: false },
-  verification: process.env.GOOGLE_SITE_VERIFICATION
-    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
-    : undefined,
 };
 
 export const viewport: Viewport = {

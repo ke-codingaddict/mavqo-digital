@@ -68,6 +68,8 @@ model Lead {
   ipHash            String?     @map("ip_hash") @db.VarChar(64)
   consentGiven      Boolean     @default(false) @map("consent_given")
 
+  mailThreads       MailThread[]
+
   internalNotes     String?     @map("internal_notes") @db.Text
   notifiedAt        DateTime?   @map("notified_at") @db.Timestamptz
   firstContactedAt  DateTime?   @map("first_contacted_at") @db.Timestamptz
@@ -93,8 +95,13 @@ model User {
   createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime   @updatedAt @map("updated_at") @db.Timestamptz
 
+  /// Personal email signature (see src/lib/mail/signature.ts for the shape).
+  signature        Json?
+
   auditLogs        AuditLog[]
   sessions         AdminSession[]
+  sentMail         MailMessage[]
+  settingsChanged  Setting[]
 
   @@map("users")
 }
@@ -130,4 +137,177 @@ model AuditLog {
   @@index([action, createdAt])
   @@index([entityType, entityId])
   @@map("audit_logs")
+}
+
+/// Admin-editable configuration (mail provider, analytics IDs…). Secret values
+/// inside `value` are encrypted at the application layer (src/lib/security/crypto.ts).
+model Setting {
+  key          String   @id @db.VarChar(60)
+  value        Json
+  updatedById  String?  @map("updated_by_id") @db.Uuid
+  updatedBy    User?    @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("settings")
+}
+
+enum MailDirection {
+  inbound
+  outbound
+}
+
+enum MailCategory {
+  received
+  compose
+  reply
+  auto_reply
+  account
+  test
+}
+
+enum MailStatus {
+  received
+  sent
+  failed
+}
+
+/// A conversation with one outside contact.
+model MailThread {
+  id                 String        @id @default(uuid()) @db.Uuid
+  subject            String        @db.VarChar(300)
+  /// Subject without Re:/Fwd: prefixes, used to match replies.
+  normalizedSubject  String        @map("normalized_subject") @db.VarChar(300)
+  contactEmail       String        @map("contact_email") @db.VarChar(254)
+  contactName        String?       @map("contact_name") @db.VarChar(160)
+  leadId             String?       @map("lead_id") @db.Uuid
+  lead               Lead?         @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  archivedAt         DateTime?     @map("archived_at") @db.Timestamptz
+  lastMessageAt      DateTime      @default(now()) @map("last_message_at") @db.Timestamptz
+  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  messages           MailMessage[]
+
+  @@index([lastMessageAt])
+  @@index([contactEmail, normalizedSubject])
+  @@map("mail_threads")
+}
+
+model MailMessage {
+  id           String         @id @default(uuid()) @db.Uuid
+  threadId     String         @map("thread_id") @db.Uuid
+  thread       MailThread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  direction    MailDirection
+  category     MailCategory
+  status       MailStatus
+  fromAddress  String         @map("from_address") @db.VarChar(254)
+  fromName     String?        @map("from_name") @db.VarChar(200)
+  to           String[]
+  cc           String[]
+  subject      String         @db.VarChar(300)
+  text         String?        @db.Text
+  html         String?        @db.Text
+  /// RFC 5322 Message-ID, used to thread replies.
+  messageId    String?        @unique @map("message_id") @db.VarChar(300)
+  inReplyTo    String?        @map("in_reply_to") @db.VarChar(300)
+  references   String[]
+  /// Resend's email id (sent or received); unique so webhook retries are no-ops.
+  resendId     String?        @unique @map("resend_id") @db.VarChar(64)
+  attachments  Json?
+  error        String?        @db.VarChar(300)
+  sentById     String?        @map("sent_by_id") @db.Uuid
+  sentBy       User?          @relation(fields: [sentById], references: [id], onDelete: SetNull)
+  readAt       DateTime?      @map("read_at") @db.Timestamptz
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([threadId, createdAt])
+  @@index([direction, readAt])
+  @@map("mail_messages")
+}
+
+/*  * ------------------------------ Google Ads reporting ------------------------------
+ */
+
+/// A client's Google Ads account that Mavqo manages. Metrics are synced from
+/// the Google Ads API (src/lib/google-ads/sync.ts) so reports never need a
+/// Google sign-in and stay fast.
+model AdsAccount {
+  id            String    @id @default(uuid()) @db.Uuid
+  /// Client / company name shown on dashboards and reports.
+  name          String    @db.VarChar(160)
+  /// Google Ads customer ID, digits only (123-456-7890 → 1234567890).
+  customerId    String    @unique @map("customer_id") @db.VarChar(10)
+  /// Account currency and time zone, read from Google Ads on each sync.
+  currencyCode  String    @default("KES") @map("currency_code") @db.VarChar(3)
+  timeZone      String?   @map("time_zone") @db.VarChar(60)
+  /// Agreed monthly ad budget, in the account currency — used for pacing.
+  monthlyBudget Decimal?  @map("monthly_budget") @db.Decimal(14, 2)
+  active        Boolean   @default(true)
+  lastSyncedAt  DateTime? @map("last_synced_at") @db.Timestamptz
+  lastSyncError String?   @map("last_sync_error") @db.VarChar(500)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  campaignDays   AdsCampaignDay[]
+  conversionDays AdsConversionDay[]
+  keywords       AdsKeyword[]
+
+  @@map("ads_accounts")
+}
+
+/// One campaign's metrics on one day (account time zone).
+model AdsCampaignDay {
+  accountId             String     @map("account_id") @db.Uuid
+  account               AdsAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  date                  DateTime   @db.Date
+  campaignId            String     @map("campaign_id") @db.VarChar(20)
+  campaignName          String     @map("campaign_name") @db.VarChar(255)
+  campaignStatus        String     @map("campaign_status") @db.VarChar(20)
+  channelType           String     @map("channel_type") @db.VarChar(40)
+  impressions           Int        @default(0)
+  clicks                Int        @default(0)
+  costMicros            BigInt     @default(0) @map("cost_micros")
+  conversions           Float      @default(0)
+  conversionsValue      Float      @default(0) @map("conversions_value")
+  /// Search impression share metrics (0–1); null for non-search campaigns.
+  searchImpressionShare Float?     @map("search_impression_share")
+  budgetLostShare       Float?     @map("budget_lost_share")
+  rankLostShare         Float?     @map("rank_lost_share")
+
+  @@id([accountId, date, campaignId])
+  @@map("ads_campaign_days")
+}
+
+/// Conversions per conversion action (calls, forms, purchases…) per day.
+model AdsConversionDay {
+  accountId   String     @map("account_id") @db.Uuid
+  account     AdsAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  date        DateTime   @db.Date
+  campaignId  String     @map("campaign_id") @db.VarChar(20)
+  actionName  String     @map("action_name") @db.VarChar(255)
+  category    String     @db.VarChar(60)
+  conversions Float      @default(0)
+  value       Float      @default(0)
+
+  @@id([accountId, date, campaignId, actionName])
+  @@map("ads_conversion_days")
+}
+
+/// Keyword performance over the last 30 days, replaced on every sync.
+model AdsKeyword {
+  accountId    String     @map("account_id") @db.Uuid
+  account      AdsAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  adGroupId    String     @map("ad_group_id") @db.VarChar(20)
+  criterionId  String     @map("criterion_id") @db.VarChar(20)
+  campaignName String     @map("campaign_name") @db.VarChar(255)
+  adGroupName  String     @map("ad_group_name") @db.VarChar(255)
+  text         String     @db.VarChar(255)
+  matchType    String     @map("match_type") @db.VarChar(20)
+  qualityScore Int?       @map("quality_score")
+  impressions  Int        @default(0)
+  clicks       Int        @default(0)
+  costMicros   BigInt     @default(0) @map("cost_micros")
+  conversions  Float      @default(0)
+
+  @@id([accountId, adGroupId, criterionId])
+  @@map("ads_keywords")
 }

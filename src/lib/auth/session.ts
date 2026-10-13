@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { db } from "@/lib/db";
 import { getServerEnv } from "@/lib/env";
 import { can, type Permission, type Role } from "./permissions";
@@ -85,6 +86,8 @@ export async function touchSession(): Promise<boolean> {
  * still active. Every admin page, action and route calls this.
  */
 export const getCurrentUser = cache(async (): Promise<AdminUser | null> => {
+  // Authorization compares against the current time, so it must never be prerendered.
+  await connection();
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   const session = await verifySession(token, getServerEnv().AUTH_SECRET);
   if (!session) return null;
@@ -109,4 +112,13 @@ export async function requireUser(permission?: Permission): Promise<AdminUser> {
   if (!user) redirect("/admin/login/");
   if (permission && !can(user.role, permission)) redirect("/admin/leads/?denied=1");
   return user;
+}
+
+/** Ends every other session for this user, e.g. after a password change. Returns how many. */
+export async function revokeOtherSessions(userId: string, keepSessionId: string) {
+  const { count } = await db().adminSession.updateMany({
+    where: { userId, revokedAt: null, id: { not: keepSessionId } },
+    data: { revokedAt: new Date() },
+  });
+  return count;
 }

@@ -61,6 +61,16 @@ async function LeadDetail({ params }: { params: Promise<{ id: string }> }) {
     include: { actor: { select: { name: true } } },
   });
 
+  const canMail = can(user.role, "mail:use");
+  const threads = canMail
+    ? await db().mailThread.findMany({
+        where: { leadId: lead.id },
+        orderBy: { lastMessageAt: "desc" },
+        take: 10,
+        select: { id: true, subject: true, lastMessageAt: true, _count: { select: { messages: true } } },
+      })
+    : [];
+
   const wa = lead.phone ? `https://wa.me/${lead.phone.replace(/\D/g, "")}` : null;
 
   return (
@@ -91,11 +101,19 @@ async function LeadDetail({ params }: { params: Promise<{ id: string }> }) {
               <MessageCircle aria-hidden="true" className="size-4" /> WhatsApp
             </a>
           )}
-          {lead.email && (
-            <a href={`mailto:${lead.email}?subject=${encodeURIComponent(`Your enquiry ${lead.reference}`)}`} className={buttonClasses("primary", "sm")}>
-              <Mail aria-hidden="true" className="size-4" /> Email
-            </a>
-          )}
+          {lead.email &&
+            (canMail ? (
+              <Link
+                href={`/admin/mail/compose/?${new URLSearchParams({ to: lead.email, subject: `Your enquiry ${lead.reference}`, lead: lead.id })}`}
+                className={buttonClasses("primary", "sm")}
+              >
+                <Mail aria-hidden="true" className="size-4" /> Email
+              </Link>
+            ) : (
+              <a href={`mailto:${lead.email}?subject=${encodeURIComponent(`Your enquiry ${lead.reference}`)}`} className={buttonClasses("primary", "sm")}>
+                <Mail aria-hidden="true" className="size-4" /> Email
+              </a>
+            ))}
         </div>
       </div>
 
@@ -150,6 +168,28 @@ async function LeadDetail({ params }: { params: Promise<{ id: string }> }) {
               <p className="mt-3 text-sm text-ink-soft">You have view-only access.</p>
             )}
           </section>
+
+          {canMail && (
+            <section aria-labelledby="conversations-heading" className="rounded-[var(--radius-lg)] bg-surface p-6 shadow-md">
+              <h2 id="conversations-heading" className="text-lg font-bold text-heading">Email conversations</h2>
+              {threads.length === 0 ? (
+                <p className="mt-3 text-sm text-ink-soft">No emails with this lead yet.</p>
+              ) : (
+                <ul className="mt-3 divide-y divide-line">
+                  {threads.map((t) => (
+                    <li key={t.id}>
+                      <Link href={`/admin/mail/${t.id}/`} className="flex items-baseline justify-between gap-3 py-2.5 text-sm hover:text-teal-ink">
+                        <span className="truncate font-bold text-heading">{t.subject}</span>
+                        <span className="shrink-0 text-xs text-ink-soft">
+                          {t._count.messages} · {formatDate(t.lastMessageAt, { dateStyle: "medium" })}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
 
           <section aria-labelledby="history-heading" className="rounded-[var(--radius-lg)] bg-surface p-6 shadow-md">
             <h2 id="history-heading" className="text-lg font-bold text-heading">History</h2>

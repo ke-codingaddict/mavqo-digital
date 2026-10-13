@@ -6,11 +6,13 @@ import { ContactWidgets } from "@/components/layout/contact-widgets";
 import { Analytics } from "@/components/analytics/analytics";
 import { JsonLd } from "@/components/seo/json-ld";
 
-// Only well-formed tag IDs are ever interpolated into the gtag script.
-const gaId = /^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "")
-  ? process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-  : undefined;
-const adsId = /^AW-\d+$/.test(process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? "") ? process.env.NEXT_PUBLIC_GOOGLE_ADS_ID : undefined;
+import { getAnalyticsSettings } from "@/lib/settings";
+
+/** Tag IDs come from Admin → Settings (cached; validated before use). */
+async function SiteAnalytics() {
+  const { gaMeasurementId, googleAdsId } = await getAnalyticsSettings();
+  return <Analytics measurementId={gaMeasurementId} adsId={googleAdsId} />;
+}
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,7 +32,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         whatsappHref={whatsappLink("Hi Mavqo Digital, I'd like to know more about your services.")}
         phone={siteConfig.contact.phone}
       />
-      <Analytics measurementId={gaId} adsId={adsId} />
+      <SiteAnalytics />
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
     </>
   );

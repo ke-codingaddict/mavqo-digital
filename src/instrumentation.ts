@@ -4,9 +4,6 @@
  */
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
-  const { getServerEnv, isEmailConfigured } = await import("@/lib/env");
-  const env = getServerEnv(); // throws with a clear list of problems
-  if (!isEmailConfigured(env)) {
-    console.warn("[config] Email notifications are not configured — leads will be stored but nobody will be emailed.");
-  }
+  const { getServerEnv } = await import("@/lib/env");
+  getServerEnv(); // throws with a clear list of problems
 }
