@@ -238,24 +238,60 @@ async function PrintableReport({ params, searchParams }: { params: Params; searc
             </Section>
           )}
 
-          <footer className="print-avoid-break grid gap-6 border-t-2 border-heading pt-6 text-sm sm:grid-cols-[1fr_1.4fr] print:grid-cols-[1fr_1.4fr]">
-            <div>
-              <p className="font-bold text-heading">Questions about this report?</p>
-              <p className="mt-1 text-ink">
-                {user.name}, {siteConfig.name}
-                <br />
-                <span className="text-ink-soft">{user.email}</span>
-              </p>
+          <div className="print-avoid-break grid gap-4 text-sm sm:grid-cols-[1fr_1.4fr] print:grid-cols-[1fr_1.4fr]">
+            <div className="flex gap-4 rounded-[var(--radius-md)] bg-teal-wash p-5">
+              <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-navy text-base font-black text-white">
+                {user.name.trim().charAt(0).toUpperCase()}
+              </span>
+              <div>
+                <p className="text-xs font-bold tracking-[0.14em] text-teal-ink uppercase">Questions about this report?</p>
+                <p className="mt-1.5 font-bold text-heading">{user.name}</p>
+                <p className="text-ink">{siteConfig.name}</p>
+                <p className="mt-1 text-ink-soft">{user.email}</p>
+              </div>
             </div>
-            <div className="text-xs leading-relaxed text-ink-soft">
-              <p className="font-bold text-ink">About these figures</p>
-              <p className="mt-1">
+            <div className="rounded-[var(--radius-md)] border border-line p-5 text-xs leading-relaxed text-ink-soft">
+              <p className="text-xs font-bold tracking-[0.14em] text-ink uppercase">About these figures</p>
+              <p className="mt-1.5">
                 Figures come from Google Ads{account.lastSyncedAt ? `, last updated ${formatDate(account.lastSyncedAt, { dateStyle: "medium", timeStyle: "short" })}` : ""}. Amounts are in {currency}.
                 Google keeps crediting conversions to the day of the click for up to 30 days, so the most recent days can still rise. Keyword figures cover the last 30 days.
               </p>
             </div>
-          </footer>
+          </div>
         </div>
+
+        {/* Closing band — mirrors the letterhead. */}
+        <footer className="print-avoid-break">
+          <div aria-hidden="true" className="flex h-1">
+            <span className="flex-[5] bg-teal" />
+            <span className="flex-1 bg-sun" />
+          </div>
+          <div className="bg-navy px-8 py-7 text-white sm:px-12 print:px-6 print:py-5">
+            <div className="flex flex-wrap items-center justify-between gap-6">
+              <div className="flex items-center gap-3">
+                <LogoMark className="size-10 rounded-[11px] ring-1 ring-white/20" />
+                <div>
+                  <p className="text-lg leading-none font-black tracking-tight">
+                    mavqo<span className="font-normal text-white/70">digital</span>
+                  </p>
+                  <p className="mt-1.5 text-xs text-white/60">{siteConfig.tagline}</p>
+                </div>
+              </div>
+              <ul className="flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-white/75 sm:justify-end">
+                <li>{new URL(siteConfig.url).host}</li>
+                {siteConfig.contact.email && <li>{siteConfig.contact.email}</li>}
+                {siteConfig.contact.phone && <li>{siteConfig.contact.phone}</li>}
+                {siteConfig.contact.location && <li>{siteConfig.contact.location}</li>}
+              </ul>
+            </div>
+            <div className="mt-6 flex flex-wrap justify-between gap-x-6 gap-y-1 border-t border-white/10 pt-4 text-[0.6875rem] text-white/50">
+              <p>
+                © {new Date().getFullYear()} {siteConfig.legalName}. Prepared exclusively for {account.name}.
+              </p>
+              <p>Confidential — please don&apos;t share outside your organisation.</p>
+            </div>
+          </div>
+        </footer>
       </article>
     </div>
   );
