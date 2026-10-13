@@ -13,7 +13,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 export type AdsAccountSummary = Awaited<ReturnType<typeof getAccount>>;
 
 export async function getAccount(id: string) {
-  const account = await db().adsAccount.findUnique({ where: { id } });
+  const account = await db().adsAccount.findUnique({ where: { id }, omit: { logo: true } });
   if (!account) return null;
   return { ...account, monthlyBudget: account.monthlyBudget === null ? null : Number(account.monthlyBudget) };
 }
@@ -42,6 +42,7 @@ export async function loadReport(account: NonNullable<AdsAccountSummary>, range:
   const previous = summarize(prevRows);
   const campaigns = byCampaign(rows);
   const series = dailySeries(rows, range.from, range.to);
+  const previousSeries = dailySeries(prevRows, range.prevFrom, range.prevTo);
 
   const conversionActions: ConversionActionSummary[] = conversionGroups
     .map((g) => ({ name: g.actionName, category: g.category, conversions: g._sum.conversions ?? 0, value: g._sum.value ?? 0 }))
@@ -84,6 +85,7 @@ export async function loadReport(account: NonNullable<AdsAccountSummary>, range:
     previous,
     campaigns,
     series,
+    previousSeries,
     conversionActions,
     topKeywords,
     recommendations,

@@ -133,6 +133,62 @@ export function dailySeries(rows: CampaignDayRow[], from: string, to: string): D
   return [...byDate.values()];
 }
 
+/** Sums consecutive 7-day blocks (dated by their first day), for charts over long periods. */
+export function weeklySeries(points: DayPoint[]): DayPoint[] {
+  const out: DayPoint[] = [];
+  points.forEach((p, i) => {
+    if (i % 7 === 0) out.push({ ...p });
+    else {
+      const w = out[out.length - 1];
+      w.cost += p.cost;
+      w.conversions += p.conversions;
+      w.clicks += p.clicks;
+      w.impressions += p.impressions;
+    }
+  });
+  return out;
+}
+
+export type WeekdayAverage = { weekday: number; label: string; name: string; days: number; conversions: number; cost: number; clicks: number };
+
+/** Average per weekday (Monday first) — which days of the week bring results. */
+export function weekdayProfile(points: DayPoint[]): WeekdayAverage[] {
+  const names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const acc = names.map((name, weekday) => ({ weekday, label: name.slice(0, 3), name, days: 0, conversions: 0, cost: 0, clicks: 0 }));
+  for (const p of points) {
+    const a = acc[(new Date(`${p.date}T00:00:00Z`).getUTCDay() + 6) % 7];
+    a.days += 1;
+    a.conversions += p.conversions;
+    a.cost += p.cost;
+    a.clicks += p.clicks;
+  }
+  return acc.map((a) => (a.days ? { ...a, conversions: a.conversions / a.days, cost: a.cost / a.days, clicks: a.clicks / a.days } : a));
+}
+
+export type CampaignSplit = { name: string; cost: number; conversions: number; shareOfSpend: number; shareOfConversions: number; other?: boolean };
+
+/** Each campaign's share of spend next to its share of conversions; the tail folds into "Other". */
+export function campaignSplit(campaigns: CampaignPerformance[], max = 5): CampaignSplit[] {
+  const cost = campaigns.reduce((s, c) => s + c.cost, 0);
+  const conversions = campaigns.reduce((s, c) => s + c.conversions, 0);
+  const row = (name: string, c: number, v: number, other?: boolean): CampaignSplit => ({
+    name,
+    cost: c,
+    conversions: v,
+    shareOfSpend: cost > 0 ? c / cost : 0,
+    shareOfConversions: conversions > 0 ? v / conversions : 0,
+    ...(other && { other }),
+  });
+  const active = campaigns.filter((c) => c.cost > 0 || c.conversions > 0);
+  const head = active.length > max ? active.slice(0, max - 1) : active;
+  const tail = active.slice(head.length);
+  const rows = head.map((c) => row(c.name, c.cost, c.conversions));
+  if (tail.length) {
+    rows.push(row(`${tail.length} other campaign${tail.length === 1 ? "" : "s"}`, tail.reduce((s, c) => s + c.cost, 0), tail.reduce((s, c) => s + c.conversions, 0), true));
+  }
+  return rows;
+}
+
 /** Relative change from `previous` to `current`, or null when there's nothing to compare with. */
 export function change(current: number | null, previous: number | null): number | null {
   if (current === null || previous === null || previous === 0) return null;

@@ -8,7 +8,9 @@
  * Brand: navy #12233F + teal #18B6A4, warmed with a paper canvas and a sun accent.
  * `teal-ink` is the text-safe teal (WCAG AA on canvas in both themes).
  */
-:root {
+/* `.paper` keeps the light palette whatever the theme — used by the client report. */
+:root,
+.paper {
   color-scheme: light;
   --canvas: #fbf8f3;
   --surface: #ffffff;
@@ -43,6 +45,9 @@
   /* Chart series (validated for colour-blind separation and 3:1 contrast on the surface). */
   --chart-spend: #2a78d6;
   --chart-conversions: #0f9688;
+  --chart-clicks: #6250d6;
+  /* The comparison period: a neutral, so the current period always leads. */
+  --chart-previous: #a3abb8;
 
   --shadow-sm: 0 1px 2px rgb(15 30 54 / 0.05);
   --shadow-md: 0 1px 2px rgb(15 30 54 / 0.04), 0 8px 24px -6px rgb(15 30 54 / 0.12);
@@ -80,6 +85,8 @@
 
   --chart-spend: #3987e5;
   --chart-conversions: #1aab9b;
+  --chart-clicks: #9085e9;
+  --chart-previous: #56627a;
 
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
   --shadow-md: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -6px rgb(0 0 0 / 0.45);
@@ -254,5 +261,7 @@
     --warning-wash: #fff6e0;
     --chart-spend: #2a78d6;
     --chart-conversions: #0f9688;
+    --chart-clicks: #6250d6;
+    --chart-previous: #a3abb8;
   }
 }

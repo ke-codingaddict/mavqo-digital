@@ -2,19 +2,32 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CircleAlert, Download, Printer, Settings2 } from "lucide-react";
+import { ArrowLeft, CircleAlert, Download, FileText, Settings2 } from "lucide-react";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth/session";
 import { can } from "@/lib/auth/permissions";
 import { getAccount, loadReport } from "@/lib/google-ads/report";
 import { RANGE_PRESETS, rangeQuery, resolveRange, todayIn, type DateRange } from "@/lib/google-ads/range";
 import { formatCustomerId } from "@/lib/google-ads/customer-id";
+import { logoUrl } from "@/lib/google-ads/logo";
 import { cn, formatInboxDate } from "@/lib/utils";
 import { AdminPageFallback } from "@/components/admin/page-fallback";
 import { Card } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/ui/button";
-import { BudgetPacing, CampaignTable, ConversionsTable, KeywordsTable, KpiGrid, Recommendations, TrendCharts } from "@/components/admin/ads/report-sections";
-import { AccountSettingsForm, SyncButton } from "../forms";
+import {
+  BudgetPacing,
+  CampaignSplitChart,
+  CampaignTable,
+  ConversionsBreakdown,
+  Funnel,
+  KeywordsTable,
+  KpiGrid,
+  Recommendations,
+  TrendSection,
+  WeekdayChart,
+} from "@/components/admin/ads/report-sections";
+import { ClientLogo } from "@/components/admin/ads/client-logo";
+import { AccountSettingsForm, LogoForm, SyncButton } from "../forms";
 
 export const metadata: Metadata = { title: "Google Ads report" };
 
@@ -77,6 +90,7 @@ async function AccountDashboard({ params, searchParams }: { params: Params; sear
   const base = `/admin/ads/${account.id}/`;
   const q = rangeQuery(range);
   const currency = account.currencyCode;
+  const logo = logoUrl(account);
 
   return (
     <div className="space-y-6">
@@ -84,13 +98,17 @@ async function AccountDashboard({ params, searchParams }: { params: Params; sear
         <ArrowLeft aria-hidden="true" className="size-4" /> All accounts
       </Link>
 
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-          <h1 className="text-2xl font-black tracking-tight text-heading">{account.name}</h1>
-          <p className="mt-1 text-sm text-ink-soft">
-            <span className="font-mono">{formatCustomerId(account.customerId)}</span> · {currency} · {range.label}
-            {account.lastSyncedAt && <> · synced {formatInboxDate(account.lastSyncedAt)}</>}
-          </p>
+      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+        <div className="flex min-w-0 items-center gap-4">
+          <ClientLogo name={account.name} src={logo} className="h-14 w-14 text-lg sm:w-24" />
+          <div className="min-w-0">
+            <p className="text-xs font-bold tracking-widest text-teal-ink uppercase">Google Ads</p>
+            <h1 className="truncate text-2xl font-black tracking-tight text-heading">{account.name}</h1>
+            <p className="mt-0.5 text-sm text-ink-soft">
+              <span className="font-mono">{formatCustomerId(account.customerId)}</span> · {currency}
+              {account.lastSyncedAt && <> · synced {formatInboxDate(account.lastSyncedAt)}</>}
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap items-start gap-2">
           {canManage && <SyncButton accountId={account.id} />}
@@ -98,7 +116,7 @@ async function AccountDashboard({ params, searchParams }: { params: Params; sear
             <Download aria-hidden="true" className="size-4" /> CSV
           </a>
           <Link href={`${base}report/?${q}`} className={buttonClasses("primary", "sm")}>
-            <Printer aria-hidden="true" className="size-4" /> Printable report
+            <FileText aria-hidden="true" className="size-4" /> Client report
           </Link>
         </div>
       </div>
@@ -112,24 +130,40 @@ async function AccountDashboard({ params, searchParams }: { params: Params; sear
 
       <RangeFilter base={base} range={range} today={today} />
 
-      {!report.hasData && (
-        <div className="rounded-[var(--radius-lg)] bg-surface p-8 text-center shadow-sm">
+      {!report.hasData ? (
+        <div className="rounded-[var(--radius-lg)] bg-surface p-10 text-center shadow-sm">
           <p className="font-bold text-heading">No ad activity in this period</p>
           <p className="mt-1 text-sm text-ink-soft">
             {account.lastSyncedAt ? "Try a longer period, or sync to fetch the latest numbers." : "This account hasn't been synced yet."}
           </p>
         </div>
-      )}
+      ) : (
+        <>
+          <KpiGrid report={report} currency={currency} />
 
-      <KpiGrid report={report} currency={currency} />
-      <BudgetPacing report={report} currency={currency} />
-      <TrendCharts report={report} currency={currency} />
-      <Recommendations items={report.recommendations} />
-      <CampaignTable report={report} currency={currency} />
-      <div className="grid gap-6 xl:grid-cols-2">
-        <ConversionsTable report={report} currency={currency} />
-        <KeywordsTable report={report} currency={currency} />
-      </div>
+          <div className="grid gap-6 xl:grid-cols-3">
+            <div className="min-w-0 xl:col-span-2">
+              <TrendSection report={report} currency={currency} />
+            </div>
+            <div className="grid content-start gap-6 md:grid-cols-2 xl:grid-cols-1">
+              <Funnel report={report} currency={currency} />
+              <BudgetPacing report={report} currency={currency} />
+            </div>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <CampaignSplitChart report={report} currency={currency} />
+            <div className="grid content-start gap-6">
+              <ConversionsBreakdown report={report} currency={currency} />
+              <WeekdayChart report={report} currency={currency} />
+            </div>
+          </div>
+
+          <Recommendations items={report.recommendations} />
+          <CampaignTable report={report} currency={currency} />
+          <KeywordsTable report={report} currency={currency} />
+        </>
+      )}
 
       {canManage && (
         <Card
@@ -138,7 +172,15 @@ async function AccountDashboard({ params, searchParams }: { params: Params; sear
           icon={<Settings2 />}
           aside={<SyncButton accountId={account.id} full label="Re-sync full history" />}
         >
-          <AccountSettingsForm account={{ id: account.id, name: account.name, monthlyBudget: account.monthlyBudget, active: account.active }} />
+          <div className="space-y-6">
+            <div>
+              <h3 className="mb-3 text-sm font-bold text-heading">Client logo</h3>
+              <LogoForm account={{ id: account.id, name: account.name, logoSrc: logo }} />
+            </div>
+            <div className="border-t border-line pt-6">
+              <AccountSettingsForm account={{ id: account.id, name: account.name, monthlyBudget: account.monthlyBudget, active: account.active }} />
+            </div>
+          </div>
         </Card>
       )}
     </div>

@@ -38,7 +38,7 @@ async function AdsOverview({ searchParams }: { searchParams: SearchParams }) {
 
   const [config, accounts, totals] = await Promise.all([
     getGoogleAdsConfig(),
-    db().adsAccount.findMany({ orderBy: [{ active: "desc" }, { name: "asc" }] }),
+    db().adsAccount.findMany({ omit: { logo: true }, orderBy: [{ active: "desc" }, { name: "asc" }] }),
     accountTotals(from, to),
   ]);
 

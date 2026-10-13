@@ -10,6 +10,7 @@ import { getClientIpHash } from "@/lib/security/request";
 import { adsAccountSchema } from "@/lib/settings/schema";
 import { formatCustomerId, normalizeCustomerId } from "@/lib/google-ads/customer-id";
 import { getGoogleAdsConfig } from "@/lib/google-ads/config";
+import { LOGO_MAX_BYTES, sniffLogoType } from "@/lib/google-ads/logo";
 import { GoogleAdsError, listAccessibleAccounts, type AccessibleAccount } from "@/lib/google-ads/client";
 import { syncAccount, syncAllAccounts } from "@/lib/google-ads/sync";
 
@@ -126,6 +127,32 @@ export async function updateAccount(_prev: FormState, formData: FormData): Promi
   await audit({ action: "ads_account_updated", actorId: user.id, entityType: "ads_account", entityId: id });
   refresh();
   return ok("Saved.");
+}
+
+export async function updateLogo(_prev: FormState, formData: FormData): Promise<FormState> {
+  const user = await manager();
+  const id = String(formData.get("accountId") ?? "");
+  if (!z.uuid().safeParse(id).success) return fail("Unknown account.");
+
+  if (formData.get("remove") === "1") {
+    await db().adsAccount.update({ where: { id }, data: { logo: null, logoType: null, logoUpdatedAt: new Date() } }).catch(() => null);
+    await audit({ action: "ads_account_logo_removed", actorId: user.id, entityType: "ads_account", entityId: id });
+    refresh();
+    return ok("Logo removed.");
+  }
+
+  const file = formData.get("logo");
+  if (!(file instanceof File) || file.size === 0) return fail("Choose an image to upload.");
+  if (file.size > LOGO_MAX_BYTES) return fail("That image is over 512 KB — export a smaller PNG or JPEG.");
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const type = sniffLogoType(bytes);
+  if (!type) return fail("Use a PNG, JPEG or WebP image.");
+
+  const updated = await db().adsAccount.update({ where: { id }, data: { logo: bytes, logoType: type, logoUpdatedAt: new Date() }, select: { id: true } }).catch(() => null);
+  if (!updated) return fail("Unknown account.");
+  await audit({ action: "ads_account_logo_updated", actorId: user.id, entityType: "ads_account", entityId: id, metadata: { bytes: bytes.length, type } });
+  refresh();
+  return ok("Logo updated.");
 }
 
 export async function deleteAccount(_prev: FormState, formData: FormData): Promise<FormState> {

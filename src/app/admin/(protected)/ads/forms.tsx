@@ -1,10 +1,12 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Printer, RefreshCw, Search } from "lucide-react";
+import { ImageUp, Printer, RefreshCw, Search } from "lucide-react";
 import { Field, FormMessage, SubmitButton, Switch } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/ui/button";
 import { formatCustomerId } from "@/lib/google-ads/customer-id";
+import { LOGO_ACCEPT } from "@/lib/google-ads/logo";
+import { ClientLogo } from "@/components/admin/ads/client-logo";
 import {
   createAccount,
   deleteAccount,
@@ -13,6 +15,7 @@ import {
   syncEverything,
   syncNow,
   updateAccount,
+  updateLogo,
   type FormState,
   type ImportState,
 } from "./actions";
@@ -179,6 +182,50 @@ export function AccountSettingsForm({ account }: { account: { id: string; name: 
           </form>
         )}
       </div>
+    </div>
+  );
+}
+
+export function LogoForm({ account }: { account: { id: string; name: string; logoSrc: string | null } }) {
+  const [state, action] = useActionState(updateLogo, idle);
+  // A picked file previews until the upload finishes (i.e. until the form state changes).
+  const [picked, setPicked] = useState<{ url: string; for: FormState } | null>(null);
+  const preview = picked?.for === state ? picked.url : null;
+  const shown = preview ?? account.logoSrc;
+  return (
+    <div className="space-y-3">
+      <FormMessage state={state} />
+      <div className="flex flex-wrap items-center gap-4">
+        <ClientLogo name={account.name} src={shown} className="h-16 w-32 text-xl" />
+        <form action={action} className="flex flex-wrap items-center gap-2">
+          <input type="hidden" name="accountId" value={account.id} />
+          <label className={buttonClasses("secondary", "sm", "cursor-pointer")}>
+            <ImageUp aria-hidden="true" className="size-4" /> {account.logoSrc ? "Replace logo" : "Choose logo"}
+            <input
+              type="file"
+              name="logo"
+              accept={LOGO_ACCEPT}
+              required
+              className="sr-only"
+              onChange={(e) => {
+                const f = e.currentTarget.files?.[0];
+                setPicked(f ? { url: URL.createObjectURL(f), for: state } : null);
+              }}
+            />
+          </label>
+          {preview && <SubmitButton pendingLabel="Uploading…">Save logo</SubmitButton>}
+        </form>
+        {account.logoSrc && !preview && (
+          <form action={action}>
+            <input type="hidden" name="accountId" value={account.id} />
+            <input type="hidden" name="remove" value="1" />
+            <button type="submit" className="text-sm font-bold text-ink-soft hover:text-danger">
+              Remove
+            </button>
+          </form>
+        )}
+      </div>
+      <p className="text-xs text-ink-soft">PNG, JPEG or WebP up to 512 KB. A wide logo on a transparent or white background prints best. Shown on the dashboard and the client report.</p>
     </div>
   );
 }

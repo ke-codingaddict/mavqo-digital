@@ -34,47 +34,47 @@ enum UserRole {
 }
 
 model Lead {
-  id                String      @id @default(uuid()) @db.Uuid
-  reference         String      @unique @db.VarChar(16)
-  enquiryType       EnquiryType @map("enquiry_type")
-  status            LeadStatus  @default(new)
+  id          String      @id @default(uuid()) @db.Uuid
+  reference   String      @unique @db.VarChar(16)
+  enquiryType EnquiryType @map("enquiry_type")
+  status      LeadStatus  @default(new)
 
-  name              String      @db.VarChar(160)
-  email             String?     @db.VarChar(254)
-  phone             String?     @db.VarChar(40)
-  organization      String?     @db.VarChar(200)
-  preferredContact  String?     @map("preferred_contact") @db.VarChar(20)
+  name             String  @db.VarChar(160)
+  email            String? @db.VarChar(254)
+  phone            String? @db.VarChar(40)
+  organization     String? @db.VarChar(200)
+  preferredContact String? @map("preferred_contact") @db.VarChar(20)
 
-  productInterest   String?     @map("product_interest") @db.VarChar(80)
-  serviceInterest   String?     @map("service_interest") @db.VarChar(80)
-  organizationSize  String?     @map("organization_size") @db.VarChar(40)
-  websiteUrl        String?     @map("website_url") @db.VarChar(300)
-  objective         String?     @db.VarChar(300)
-  budgetRange       String?     @map("budget_range") @db.VarChar(40)
-  timeline          String?     @db.VarChar(40)
-  message           String?     @db.Text
+  productInterest  String? @map("product_interest") @db.VarChar(80)
+  serviceInterest  String? @map("service_interest") @db.VarChar(80)
+  organizationSize String? @map("organization_size") @db.VarChar(40)
+  websiteUrl       String? @map("website_url") @db.VarChar(300)
+  objective        String? @db.VarChar(300)
+  budgetRange      String? @map("budget_range") @db.VarChar(40)
+  timeline         String? @db.VarChar(40)
+  message          String? @db.Text
 
   // Attribution: which page and campaign produced this lead.
-  sourcePage        String?     @map("source_page") @db.VarChar(300)
-  referrer          String?     @db.VarChar(300)
-  utmSource         String?     @map("utm_source") @db.VarChar(100)
-  utmMedium         String?     @map("utm_medium") @db.VarChar(100)
-  utmCampaign       String?     @map("utm_campaign") @db.VarChar(150)
-  utmTerm           String?     @map("utm_term") @db.VarChar(150)
-  utmContent        String?     @map("utm_content") @db.VarChar(150)
-  gclid             String?     @db.VarChar(200)
+  sourcePage  String? @map("source_page") @db.VarChar(300)
+  referrer    String? @db.VarChar(300)
+  utmSource   String? @map("utm_source") @db.VarChar(100)
+  utmMedium   String? @map("utm_medium") @db.VarChar(100)
+  utmCampaign String? @map("utm_campaign") @db.VarChar(150)
+  utmTerm     String? @map("utm_term") @db.VarChar(150)
+  utmContent  String? @map("utm_content") @db.VarChar(150)
+  gclid       String? @db.VarChar(200)
 
   // Salted hash only — the raw IP is never stored. Used for rate limiting.
-  ipHash            String?     @map("ip_hash") @db.VarChar(64)
-  consentGiven      Boolean     @default(false) @map("consent_given")
+  ipHash       String? @map("ip_hash") @db.VarChar(64)
+  consentGiven Boolean @default(false) @map("consent_given")
 
-  mailThreads       MailThread[]
+  mailThreads MailThread[]
 
-  internalNotes     String?     @map("internal_notes") @db.Text
-  notifiedAt        DateTime?   @map("notified_at") @db.Timestamptz
-  firstContactedAt  DateTime?   @map("first_contacted_at") @db.Timestamptz
-  createdAt         DateTime    @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+  internalNotes    String?   @map("internal_notes") @db.Text
+  notifiedAt       DateTime? @map("notified_at") @db.Timestamptz
+  firstContactedAt DateTime? @map("first_contacted_at") @db.Timestamptz
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
   @@index([status, createdAt])
   @@index([enquiryType, createdAt])
@@ -83,25 +83,25 @@ model Lead {
 }
 
 model User {
-  id               String     @id @default(uuid()) @db.Uuid
-  email            String     @unique @db.VarChar(254)
-  name             String     @db.VarChar(160)
-  passwordHash     String     @map("password_hash") @db.VarChar(255)
-  role             UserRole   @default(sales)
-  active           Boolean    @default(true)
-  failedLogins     Int        @default(0) @map("failed_logins")
-  lockedUntil      DateTime?  @map("locked_until") @db.Timestamptz
-  lastLoginAt      DateTime?  @map("last_login_at") @db.Timestamptz
-  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt        DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique @db.VarChar(254)
+  name         String    @db.VarChar(160)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  role         UserRole  @default(sales)
+  active       Boolean   @default(true)
+  failedLogins Int       @default(0) @map("failed_logins")
+  lockedUntil  DateTime? @map("locked_until") @db.Timestamptz
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
   /// Personal email signature (see src/lib/mail/signature.ts for the shape).
-  signature        Json?
+  signature Json?
 
-  auditLogs        AuditLog[]
-  sessions         AdminSession[]
-  sentMail         MailMessage[]
-  settingsChanged  Setting[]
+  auditLogs       AuditLog[]
+  sessions        AdminSession[]
+  sentMail        MailMessage[]
+  settingsChanged Setting[]
 
   @@map("users")
 }
@@ -109,14 +109,14 @@ model User {
 /// Server-side record of each admin sign-in, so sessions can be revoked and
 /// expire after inactivity regardless of what the browser holds.
 model AdminSession {
-  id          String    @id @default(uuid()) @db.Uuid
-  userId      String    @map("user_id") @db.Uuid
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lastSeenAt  DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz
-  expiresAt   DateTime  @map("expires_at") @db.Timestamptz
-  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz
-  ipHash      String?   @map("ip_hash") @db.VarChar(64)
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastSeenAt DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz
+  ipHash     String?   @map("ip_hash") @db.VarChar(64)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([userId])
   @@index([expiresAt])
@@ -124,15 +124,15 @@ model AdminSession {
 }
 
 model AuditLog {
-  id          String   @id @default(uuid()) @db.Uuid
-  actorId     String?  @map("actor_id") @db.Uuid
-  actor       User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
-  action      String   @db.VarChar(60)
-  entityType  String?  @map("entity_type") @db.VarChar(40)
-  entityId    String?  @map("entity_id") @db.VarChar(64)
-  metadata    Json?
-  ipHash      String?  @map("ip_hash") @db.VarChar(64)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String?  @map("actor_id") @db.Uuid
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action     String   @db.VarChar(60)
+  entityType String?  @map("entity_type") @db.VarChar(40)
+  entityId   String?  @map("entity_id") @db.VarChar(64)
+  metadata   Json?
+  ipHash     String?  @map("ip_hash") @db.VarChar(64)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([action, createdAt])
   @@index([entityType, entityId])
@@ -142,11 +142,11 @@ model AuditLog {
 /// Admin-editable configuration (mail provider, analytics IDs…). Secret values
 /// inside `value` are encrypted at the application layer (src/lib/security/crypto.ts).
 model Setting {
-  key          String   @id @db.VarChar(60)
-  value        Json
-  updatedById  String?  @map("updated_by_id") @db.Uuid
-  updatedBy    User?    @relation(fields: [updatedById], references: [id], onDelete: SetNull)
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  key         String   @id @db.VarChar(60)
+  value       Json
+  updatedById String?  @map("updated_by_id") @db.Uuid
+  updatedBy   User?    @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("settings")
 }
@@ -173,19 +173,19 @@ enum MailStatus {
 
 /// A conversation with one outside contact.
 model MailThread {
-  id                 String        @id @default(uuid()) @db.Uuid
-  subject            String        @db.VarChar(300)
+  id                String    @id @default(uuid()) @db.Uuid
+  subject           String    @db.VarChar(300)
   /// Subject without Re:/Fwd: prefixes, used to match replies.
-  normalizedSubject  String        @map("normalized_subject") @db.VarChar(300)
-  contactEmail       String        @map("contact_email") @db.VarChar(254)
-  contactName        String?       @map("contact_name") @db.VarChar(160)
-  leadId             String?       @map("lead_id") @db.Uuid
-  lead               Lead?         @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  archivedAt         DateTime?     @map("archived_at") @db.Timestamptz
-  lastMessageAt      DateTime      @default(now()) @map("last_message_at") @db.Timestamptz
-  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  normalizedSubject String    @map("normalized_subject") @db.VarChar(300)
+  contactEmail      String    @map("contact_email") @db.VarChar(254)
+  contactName       String?   @map("contact_name") @db.VarChar(160)
+  leadId            String?   @map("lead_id") @db.Uuid
+  lead              Lead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  archivedAt        DateTime? @map("archived_at") @db.Timestamptz
+  lastMessageAt     DateTime  @default(now()) @map("last_message_at") @db.Timestamptz
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
-  messages           MailMessage[]
+  messages MailMessage[]
 
   @@index([lastMessageAt])
   @@index([contactEmail, normalizedSubject])
@@ -193,38 +193,39 @@ model MailThread {
 }
 
 model MailMessage {
-  id           String         @id @default(uuid()) @db.Uuid
-  threadId     String         @map("thread_id") @db.Uuid
-  thread       MailThread     @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  direction    MailDirection
-  category     MailCategory
-  status       MailStatus
-  fromAddress  String         @map("from_address") @db.VarChar(254)
-  fromName     String?        @map("from_name") @db.VarChar(200)
-  to           String[]
-  cc           String[]
-  subject      String         @db.VarChar(300)
-  text         String?        @db.Text
-  html         String?        @db.Text
+  id          String        @id @default(uuid()) @db.Uuid
+  threadId    String        @map("thread_id") @db.Uuid
+  thread      MailThread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  direction   MailDirection
+  category    MailCategory
+  status      MailStatus
+  fromAddress String        @map("from_address") @db.VarChar(254)
+  fromName    String?       @map("from_name") @db.VarChar(200)
+  to          String[]
+  cc          String[]
+  subject     String        @db.VarChar(300)
+  text        String?       @db.Text
+  html        String?       @db.Text
   /// RFC 5322 Message-ID, used to thread replies.
-  messageId    String?        @unique @map("message_id") @db.VarChar(300)
-  inReplyTo    String?        @map("in_reply_to") @db.VarChar(300)
-  references   String[]
+  messageId   String?       @unique @map("message_id") @db.VarChar(300)
+  inReplyTo   String?       @map("in_reply_to") @db.VarChar(300)
+  references  String[]
   /// Resend's email id (sent or received); unique so webhook retries are no-ops.
-  resendId     String?        @unique @map("resend_id") @db.VarChar(64)
-  attachments  Json?
-  error        String?        @db.VarChar(300)
-  sentById     String?        @map("sent_by_id") @db.Uuid
-  sentBy       User?          @relation(fields: [sentById], references: [id], onDelete: SetNull)
-  readAt       DateTime?      @map("read_at") @db.Timestamptz
-  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  resendId    String?       @unique @map("resend_id") @db.VarChar(64)
+  attachments Json?
+  error       String?       @db.VarChar(300)
+  sentById    String?       @map("sent_by_id") @db.Uuid
+  sentBy      User?         @relation(fields: [sentById], references: [id], onDelete: SetNull)
+  readAt      DateTime?     @map("read_at") @db.Timestamptz
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([threadId, createdAt])
   @@index([direction, readAt])
   @@map("mail_messages")
 }
 
-/*  * ------------------------------ Google Ads reporting ------------------------------
+/**
+ * ------------------------------ Google Ads reporting ------------------------------
  */
 
 /// A client's Google Ads account that Mavqo manages. Metrics are synced from
@@ -242,6 +243,10 @@ model AdsAccount {
   /// Agreed monthly ad budget, in the account currency — used for pacing.
   monthlyBudget Decimal?  @map("monthly_budget") @db.Decimal(14, 2)
   active        Boolean   @default(true)
+  /// Client logo for the dashboard and printable report (PNG, JPEG or WebP; ≤ 512 KB).
+  logo          Bytes?
+  logoType      String?   @map("logo_type") @db.VarChar(20)
+  logoUpdatedAt DateTime? @map("logo_updated_at") @db.Timestamptz
   lastSyncedAt  DateTime? @map("last_synced_at") @db.Timestamptz
   lastSyncError String?   @map("last_sync_error") @db.VarChar(500)
   createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz

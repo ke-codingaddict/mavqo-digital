@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { can } from "@/lib/auth/permissions";
 import { addDays, daysBetween, eachDay, isIsoDate, resolveRange } from "@/lib/google-ads/range";
-import { byCampaign, change, dailySeries, impressionShare, projectMonthSpend, summarize, type CampaignDayRow } from "@/lib/google-ads/metrics";
+import { byCampaign, campaignSplit, change, dailySeries, impressionShare, projectMonthSpend, summarize, weekdayProfile, weeklySeries, type CampaignDayRow } from "@/lib/google-ads/metrics";
+import { logoUrl, sniffLogoType } from "@/lib/google-ads/logo";
 import { buildRecommendations, type RecommendationInput } from "@/lib/google-ads/recommendations";
 import { formatCustomerId, normalizeCustomerId } from "@/lib/google-ads/customer-id";
 import { describeAdsError } from "@/lib/google-ads/client";
@@ -102,6 +103,51 @@ describe("metrics", () => {
 
   it("projects month-end spend", () => {
     expect(projectMonthSpend(10_000, 10, 31)).toBe(31_000);
+  });
+
+  it("rolls days up into 7-day blocks dated by their first day", () => {
+    const days = dailySeries([], "2026-10-01", "2026-10-10").map((d) => ({ ...d, cost: 1, conversions: 1 }));
+    const weeks = weeklySeries(days);
+    expect(weeks.map((w) => [w.date, w.cost])).toEqual([
+      ["2026-10-01", 7],
+      ["2026-10-08", 3],
+    ]);
+    expect(days[0].cost).toBe(1); // input untouched
+  });
+
+  it("averages each weekday, Monday first", () => {
+    // 2026-10-05 and 2026-10-12 are Mondays.
+    const s = dailySeries([row({ date: "2026-10-05", conversions: 4 }), row({ date: "2026-10-12", conversions: 2 })], "2026-10-05", "2026-10-18");
+    const days = weekdayProfile(s);
+    expect(days[0]).toMatchObject({ label: "Mon", name: "Monday", days: 2, conversions: 3 });
+    expect(days[6]).toMatchObject({ label: "Sun", days: 2, conversions: 0 });
+  });
+
+  it("compares share of spend with share of conversions, folding the tail into Other", () => {
+    const campaigns = byCampaign([
+      row({ campaignId: "a", cost: 500, conversions: 1 }),
+      row({ campaignId: "b", cost: 300, conversions: 6 }),
+      row({ campaignId: "c", cost: 150, conversions: 2 }),
+      row({ campaignId: "d", cost: 50, conversions: 1 }),
+    ]);
+    const split = campaignSplit(campaigns, 3);
+    expect(split).toHaveLength(3);
+    expect(split[0]).toMatchObject({ shareOfSpend: 0.5, shareOfConversions: 0.1 });
+    expect(split[2]).toMatchObject({ name: "2 other campaigns", other: true, cost: 200, conversions: 3 });
+  });
+});
+
+describe("client logos", () => {
+  it("recognises PNG, JPEG and WebP by their bytes, and nothing else", () => {
+    expect(sniffLogoType(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0]))).toBe("image/png");
+    expect(sniffLogoType(new Uint8Array([0xff, 0xd8, 0xff, 0xe0]))).toBe("image/jpeg");
+    expect(sniffLogoType(new Uint8Array([0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50]))).toBe("image/webp");
+    expect(sniffLogoType(new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg"/>'))).toBeNull();
+  });
+
+  it("versions the logo URL so new uploads show straight away", () => {
+    expect(logoUrl({ id: "x", logoType: null, logoUpdatedAt: null })).toBeNull();
+    expect(logoUrl({ id: "x", logoType: "image/png", logoUpdatedAt: new Date(1000) })).toBe("/admin/ads/x/logo/?v=1000");
   });
 });
 

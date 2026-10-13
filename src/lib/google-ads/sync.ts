@@ -60,7 +60,7 @@ export type SyncResult = { ok: true; from: string; to: string; campaignDays: num
 
 export async function syncAccount(accountId: string, opts: { full?: boolean } = {}): Promise<SyncResult> {
   const client = db();
-  const account = await client.adsAccount.findUnique({ where: { id: accountId } });
+  const account = await client.adsAccount.findUnique({ where: { id: accountId }, omit: { logo: true } });
   if (!account) return { ok: false, error: "Account not found.", needsReconnect: false };
 
   const config = await getGoogleAdsConfig();
