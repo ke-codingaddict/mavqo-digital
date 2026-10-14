@@ -6,15 +6,18 @@ import { cn } from "@/lib/utils";
 import { THEME_STORAGE_KEY } from "./constants";
 type Preference = "light" | "dark" | "system";
 
+/** Used until the visitor picks a theme. */
+const DEFAULT_PREFERENCE: Preference = "dark";
+
 const listeners = new Set<() => void>();
 const media = () => window.matchMedia("(prefers-color-scheme: dark)");
 
 function readPreference(): Preference {
   try {
     const v = localStorage.getItem(THEME_STORAGE_KEY);
-    return v === "light" || v === "dark" ? v : "system";
+    return v === "light" || v === "dark" || v === "system" ? v : DEFAULT_PREFERENCE;
   } catch {
-    return "system";
+    return DEFAULT_PREFERENCE;
   }
 }
 
@@ -38,8 +41,7 @@ function subscribe(cb: () => void) {
 
 function setPreference(pref: Preference) {
   try {
-    if (pref === "system") localStorage.removeItem(THEME_STORAGE_KEY);
-    else localStorage.setItem(THEME_STORAGE_KEY, pref);
+    localStorage.setItem(THEME_STORAGE_KEY, pref);
   } catch {
     // Still applies for this visit.
   }
@@ -55,7 +57,7 @@ const options: { value: Preference; label: string; Icon: typeof Sun }[] = [
 
 /** Segmented light / dark / system switch. */
 export function ThemeToggle({ className, onInverse }: { className?: string; onInverse?: boolean }) {
-  const pref = useSyncExternalStore(subscribe, readPreference, () => "system" as Preference);
+  const pref = useSyncExternalStore(subscribe, readPreference, () => DEFAULT_PREFERENCE);
   return (
     <div
       role="radiogroup"

@@ -27,20 +27,18 @@ const baseMetadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbf8f3" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a111d" },
-  ],
+  themeColor: "#0a111d",
   width: "device-width",
   initialScale: 1,
 };
 
-// Applies the saved (or system) theme before first paint, so pages stay static with no flash.
-const themeScript = `(function(){try{var p=localStorage.getItem("${THEME_STORAGE_KEY}");var d=p==="dark"||((!p||p==="system")&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",d?"dark":"light")}catch(e){}})()`;
+// Applies the saved theme before first paint, so pages stay static with no flash.
+// Dark is the default until the visitor picks light or system.
+const themeScript = `(function(){try{var p=localStorage.getItem("${THEME_STORAGE_KEY}");var d=p==="light"?false:p==="system"?window.matchMedia("(prefers-color-scheme: dark)").matches:true;document.documentElement.setAttribute("data-theme",d?"dark":"light")}catch(e){}})()`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-KE" data-theme="light" suppressHydrationWarning>
+    <html lang="en-KE" data-theme="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
