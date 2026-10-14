@@ -6,7 +6,7 @@ import { requireUser } from "@/lib/auth/session";
 import { can } from "@/lib/auth/permissions";
 import { getMailConfig } from "@/lib/settings";
 import { isSignatureEmpty, parseSignature } from "@/lib/mail/signature";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { MailComposeSkeleton, MailSidebarSkeleton } from "@/components/admin/skeletons";
 import { MailSidebar } from "@/components/admin/mail/sidebar";
 import { ComposeForm } from "@/components/admin/mail/compose-form";
 
@@ -17,7 +17,7 @@ const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
 export default function ComposePage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<MailComposeSkeleton />}>
       <Compose searchParams={searchParams} />
     </Suspense>
   );
@@ -32,7 +32,7 @@ async function Compose({ searchParams }: { searchParams: SearchParams }) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[14rem_minmax(0,1fr)]">
-      <Suspense fallback={<div className="h-40" />}>
+      <Suspense fallback={<MailSidebarSkeleton />}>
         <MailSidebar active="compose" canManageSettings={can(user.role, "settings:manage")} />
       </Suspense>
       <div className="min-w-0 space-y-4">

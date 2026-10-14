@@ -13,7 +13,7 @@ import { interestLabel } from "@/content/form-options";
 import { formatDate } from "@/lib/utils";
 import { LeadStatusBadge } from "@/components/admin/badges";
 import { buttonClasses } from "@/components/ui/button";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { LeadDetailSkeleton } from "@/components/admin/skeletons";
 import { deleteLead } from "../../../actions";
 import { LeadUpdateForm } from "./lead-update-form";
 
@@ -40,7 +40,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
  */
 export default function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<LeadDetailSkeleton />}>
       <LeadDetail params={params} />
     </Suspense>
   );

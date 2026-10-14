@@ -13,7 +13,7 @@ import { formatCustomerId } from "@/lib/google-ads/customer-id";
 import { logoUrl } from "@/lib/google-ads/logo";
 import { formatDate } from "@/lib/utils";
 import { LogoMark } from "@/components/layout/logo";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { AdsReportSkeleton } from "@/components/admin/skeletons";
 import { ClientLogo } from "@/components/admin/ads/client-logo";
 import {
   BudgetPacing,
@@ -38,7 +38,7 @@ const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
 export default function ReportPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<AdsReportSkeleton />}>
       <PrintableReport params={params} searchParams={searchParams} />
     </Suspense>
   );

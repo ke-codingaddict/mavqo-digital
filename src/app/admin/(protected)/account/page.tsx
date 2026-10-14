@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth/session";
 import { parseSignature } from "@/lib/mail/signature";
 import { formatDate } from "@/lib/utils";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { AccountSkeleton } from "@/components/admin/skeletons";
 import { Card, PageHeader } from "@/components/admin/ui";
 import { PasswordForm } from "./password-form";
 import { SignatureForm } from "./signature-form";
@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: "Account" };
 
 export default function AccountPage() {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<AccountSkeleton />}>
       <Account />
     </Suspense>
   );

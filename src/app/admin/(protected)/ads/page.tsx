@@ -11,7 +11,7 @@ import { formatMoney, formatNumber } from "@/lib/google-ads/metrics";
 import { addDays, todayIn } from "@/lib/google-ads/range";
 import { formatCustomerId } from "@/lib/google-ads/customer-id";
 import { formatInboxDate } from "@/lib/utils";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { AdsOverviewSkeleton } from "@/components/admin/skeletons";
 import { Card, PageHeader, StatusPill } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/ui/button";
 import { AddAccountForm, ImportAccounts, SyncAllButton } from "./forms";
@@ -22,7 +22,7 @@ type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default function AdsPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<AdsOverviewSkeleton />}>
       <AdsOverview searchParams={searchParams} />
     </Suspense>
   );

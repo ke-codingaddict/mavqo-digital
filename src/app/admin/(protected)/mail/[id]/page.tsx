@@ -11,7 +11,7 @@ import { getMailConfig } from "@/lib/settings";
 import { isSignatureEmpty, parseSignature } from "@/lib/mail/signature";
 import { formatAddress, snippet } from "@/lib/mail/format";
 import { formatDate } from "@/lib/utils";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { MailThreadSkeleton, MailSidebarSkeleton } from "@/components/admin/skeletons";
 import { Avatar } from "@/components/admin/mail/avatar";
 import { MailSidebar } from "@/components/admin/mail/sidebar";
 import { MessageBody } from "@/components/admin/mail/message-body";
@@ -26,7 +26,7 @@ type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default function ThreadPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<MailThreadSkeleton />}>
       <Thread params={params} searchParams={searchParams} />
     </Suspense>
   );
@@ -58,7 +58,7 @@ async function Thread({ params, searchParams }: { params: Params; searchParams: 
 
   return (
     <div className="grid gap-6 lg:grid-cols-[14rem_minmax(0,1fr)]">
-      <Suspense fallback={<div className="h-40" />}>
+      <Suspense fallback={<MailSidebarSkeleton />}>
         <MailSidebar active={null} canManageSettings={can(user.role, "settings:manage")} />
       </Suspense>
 

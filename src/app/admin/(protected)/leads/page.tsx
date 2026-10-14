@@ -12,7 +12,7 @@ import { interestLabel } from "@/content/form-options";
 import { cn, formatDate } from "@/lib/utils";
 import { LeadStatusBadge } from "@/components/admin/badges";
 import { buttonClasses } from "@/components/ui/button";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { LeadsSkeleton } from "@/components/admin/skeletons";
 
 export const metadata: Metadata = { title: "Leads" };
 
@@ -52,7 +52,7 @@ function formatDuration(ms: number) {
  */
 export default function LeadsPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<LeadsSkeleton />}>
       <LeadsContent searchParams={searchParams} />
     </Suspense>
   );

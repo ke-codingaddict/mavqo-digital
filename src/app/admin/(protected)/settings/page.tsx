@@ -9,7 +9,7 @@ import { getAnalyticsSettings, getMailConfig, getSavedAnalytics } from "@/lib/se
 import { maskSecret } from "@/lib/security/crypto";
 import { getDomain, type Domain } from "@/lib/mail/resend";
 import { formatDate, cn } from "@/lib/utils";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { SettingsSkeleton } from "@/components/admin/skeletons";
 import { Card, CopyButton, PageHeader, StatusPill } from "@/components/admin/ui";
 import { AnalyticsForm, ApiKeyForm, DomainActions, GoogleAdsAppForm, GoogleAdsConnectForm, InboxForm, MailPreferencesForm, TestEmailForm } from "./forms";
 import { getGoogleAdsConfig, oauthRedirectUri } from "@/lib/google-ads/config";
@@ -22,7 +22,7 @@ type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default function SettingsPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<SettingsSkeleton />}>
       <Settings searchParams={searchParams} />
     </Suspense>
   );

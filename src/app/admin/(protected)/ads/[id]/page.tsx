@@ -11,7 +11,7 @@ import { RANGE_PRESETS, rangeQuery, resolveRange, todayIn, type DateRange } from
 import { formatCustomerId } from "@/lib/google-ads/customer-id";
 import { logoUrl } from "@/lib/google-ads/logo";
 import { cn, formatInboxDate } from "@/lib/utils";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { AdsAccountSkeleton } from "@/components/admin/skeletons";
 import { Card } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/ui/button";
 import {
@@ -38,7 +38,7 @@ const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
 export default function AccountPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<AdsAccountSkeleton />}>
       <AccountDashboard params={params} searchParams={searchParams} />
     </Suspense>
   );

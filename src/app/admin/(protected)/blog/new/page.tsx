@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { BlogEditorSkeleton } from "@/components/admin/skeletons";
 import { PageHeader } from "@/components/admin/ui";
 import { blogCategories } from "../categories";
 import { PostEditor } from "../editor";
@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "New article" };
 
 export default function NewPostPage() {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<BlogEditorSkeleton />}>
       <NewPost />
     </Suspense>
   );

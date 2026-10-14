@@ -8,7 +8,7 @@ import { requireUser } from "@/lib/auth/session";
 import { can } from "@/lib/auth/permissions";
 import { snippet } from "@/lib/mail/format";
 import { cn, formatInboxDate } from "@/lib/utils";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { MailListSkeleton, MailSidebarSkeleton } from "@/components/admin/skeletons";
 import { Avatar } from "@/components/admin/mail/avatar";
 import { MailSidebar, type Folder } from "@/components/admin/mail/sidebar";
 import { buttonClasses } from "@/components/ui/button";
@@ -21,7 +21,7 @@ const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
 export default function MailPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<MailListSkeleton />}>
       <MailList searchParams={searchParams} />
     </Suspense>
   );
@@ -89,7 +89,7 @@ async function MailList({ searchParams }: { searchParams: SearchParams }) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[14rem_minmax(0,1fr)]">
-      <Suspense fallback={<div className="h-40" />}>
+      <Suspense fallback={<MailSidebarSkeleton />}>
         <MailSidebar active={folder} canManageSettings={can(user.role, "settings:manage")} />
       </Suspense>
 

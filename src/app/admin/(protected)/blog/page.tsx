@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth/session";
 import { posts as builtInPosts } from "@/content/blog/posts";
 import { formatDate, formatInboxDate } from "@/lib/utils";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { BlogListSkeleton } from "@/components/admin/skeletons";
 import { PageHeader, StatusPill } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/ui/button";
 
@@ -16,7 +16,7 @@ type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default function BlogAdminPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<BlogListSkeleton />}>
       <BlogList searchParams={searchParams} />
     </Suspense>
   );

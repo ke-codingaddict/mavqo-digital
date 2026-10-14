@@ -6,6 +6,7 @@ import { requireUser } from "@/lib/auth/session";
 import { can } from "@/lib/auth/permissions";
 import { countUnreadThreads } from "@/lib/mail/queries";
 import { AdminNav } from "@/components/admin/admin-nav";
+import { AdminShellSkeleton } from "@/components/admin/skeletons";
 import { IDLE_TIMEOUT_SECONDS } from "@/lib/auth/session-token";
 import { LogoMark } from "@/components/layout/logo";
 import { SessionGuard, SignOutButton } from "@/components/admin/session-guard";
@@ -58,7 +59,7 @@ async function AdminShell({ children }: { children: ReactNode }) {
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
   return (
-    <Suspense fallback={<div className="p-10 text-sm text-ink-soft">Loading…</div>}>
+    <Suspense fallback={<AdminShellSkeleton />}>
       <AdminShell>{children}</AdminShell>
     </Suspense>
   );

@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth/session";
 import { coverUrl } from "@/lib/blog/images";
 import { formatInboxDate } from "@/lib/utils";
-import { AdminPageFallback } from "@/components/admin/page-fallback";
+import { BlogEditorSkeleton } from "@/components/admin/skeletons";
 import { PageHeader, StatusPill } from "@/components/admin/ui";
 import { blogCategories } from "../categories";
 import { DeletePost, PostEditor } from "../editor";
@@ -20,7 +20,7 @@ type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default function EditPostPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
   return (
-    <Suspense fallback={<AdminPageFallback />}>
+    <Suspense fallback={<BlogEditorSkeleton />}>
       <EditPost params={params} searchParams={searchParams} />
     </Suspense>
   );
