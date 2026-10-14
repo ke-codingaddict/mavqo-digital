@@ -9,7 +9,7 @@ export const services: Service[] = [
     href: "/digital-marketing-kenya/seo-services-kenya/",
     division: "digital_marketing",
     icon: "search",
-    image: { src: "/images/seo.jpg", alt: "Laptop showing a website analytics dashboard" },
+    image: { src: "/images/seo.webp", alt: "Laptop showing a sales analytics dashboard on an office desk" },
     summary: "Get found by customers who are already searching for what you offer.",
     description:
       "Search engine optimization that starts with how your customers actually search, fixes what's holding your site back technically, and builds useful content that earns visibility over time.",
@@ -53,7 +53,7 @@ export const services: Service[] = [
     href: "/digital-marketing-kenya/google-ads-management-kenya/",
     division: "digital_marketing",
     icon: "ads",
-    image: { src: "/images/google-ads.jpg", alt: "Team planning a campaign with sticky notes on a whiteboard" },
+    image: { src: "/images/google-ads.webp", alt: "Two colleagues planning a campaign with sticky notes on a glass wall" },
     summary: "Pay-per-click campaigns built to generate leads, not just clicks.",
     description:
       "Google Ads and PPC management focused on qualified leads: tight targeting, compelling ads, landing pages that convert and conversion tracking that shows what your budget is really producing.",
@@ -99,7 +99,7 @@ export const services: Service[] = [
     href: "/digital-marketing-kenya/social-media-marketing-kenya/",
     division: "digital_marketing",
     icon: "social",
-    image: { src: "/images/social.jpg", alt: "Young professionals collaborating around laptops" },
+    image: { src: "/images/social.webp", alt: "Two young professionals working together on a laptop and smartphone in a café" },
     summary: "Consistent, on-brand social media that builds trust and drives enquiries.",
     description:
       "Social media marketing that combines a clear strategy, consistent content and targeted paid campaigns, so your brand stays visible to the right audience and turns attention into conversations.",
@@ -143,7 +143,7 @@ export const services: Service[] = [
     href: "/digital-marketing-kenya/conversion-rate-optimization/",
     division: "digital_marketing",
     icon: "conversion",
-    image: { src: "/images/cro.jpg", alt: "Hands sketching website wireframes beside a smartphone" },
+    image: { src: "/images/cro.webp", alt: "Designer sketching website wireframes on a whiteboard" },
     summary: "Turn more of your existing website visitors into enquiries and sales.",
     description:
       "Conversion rate optimization (CRO) finds where visitors drop off and fixes it — through clearer messaging, better forms, faster pages and measured experiments — so your traffic and ad spend work harder.",
@@ -181,7 +181,7 @@ export const services: Service[] = [
     href: "/website-design-kenya/",
     division: "web_development",
     icon: "web",
-    image: { src: "/images/web-design.jpg", alt: "Developer workspace with code on multiple screens" },
+    image: { src: "/images/web-design.webp", alt: "Developer writing code at a desktop computer in a modern office" },
     summary: "Fast, professional websites designed to turn visitors into customers.",
     description:
       "We design and build business websites that load fast, look professional on every device, are easy for you to update and are built from day one to rank in search and generate enquiries.",
@@ -222,7 +222,7 @@ export const services: Service[] = [
     href: "/ecommerce-website-development/",
     division: "web_development",
     icon: "cart",
-    image: { src: "/images/ecommerce.jpg", alt: "Person shopping online on a smartphone" },
+    image: { src: "/images/ecommerce.webp", alt: "Smiling online-shop owner on a phone call, surrounded by parcels ready to ship" },
     summary: "Online stores that are easy to manage and built to sell.",
     description:
       "We build e-commerce websites with clear product pages, smooth checkout and simple order management, so you can sell online with confidence.",

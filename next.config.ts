@@ -33,6 +33,10 @@ const nextConfig: NextConfig = {
   // Routes in the spec use trailing slashes (e.g. /software/pos-system-kenya/).
   trailingSlash: true,
   poweredByHeader: false,
+  experimental: {
+    // Blog cover uploads (≤ 4 MB, src/lib/blog/images.ts) plus the article text and form overhead.
+    serverActions: { bodySizeLimit: "5mb" },
+  },
   turbopack: {
     rules: {
       "*.css": {

@@ -22,7 +22,7 @@ export default function SoftwarePage() {
         eyebrow="Business software"
         title="Software that fits the way you already work"
         intro="Replace paperwork, spreadsheets and disconnected tools with systems your team will actually use — and see each one working in a live demo before you decide."
-        image={{ src: "/images/hero-team.jpg", alt: "A team working together at computers" }}
+        image={{ src: "/images/hero-team.webp", alt: "Team of colleagues working together at computers in a modern office" }}
         actions={
           <>
             <ButtonLink href="/request-demo/" size="lg">

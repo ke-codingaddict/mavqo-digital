@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 async function AdminShell({ children }: { children: ReactNode }) {
   const user = await requireUser();
-  const show = { mail: can(user.role, "mail:use"), ads: can(user.role, "ads:view"), settings: can(user.role, "settings:manage") };
+  const show = { mail: can(user.role, "mail:use"), ads: can(user.role, "ads:view"), blog: can(user.role, "blog:manage"), settings: can(user.role, "settings:manage") };
   const unread = show.mail ? await countUnreadThreads() : 0;
   return (
     <div className="min-h-dvh bg-surface-2 print:bg-white">

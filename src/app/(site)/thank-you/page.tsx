@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight, CircleCheck } from "lucide-react";
-import { getPublishedPosts } from "@/content/blog/posts";
+import { getPublishedPosts } from "@/lib/blog/posts";
 import { pageMetadata } from "@/lib/seo";
 import { Container } from "@/components/ui/primitives";
 import { ButtonLink } from "@/components/ui/button";
@@ -14,8 +14,8 @@ export const metadata = pageMetadata({
   noIndex: true,
 });
 
-export default function ThankYouPage() {
-  const posts = getPublishedPosts().slice(0, 3);
+export default async function ThankYouPage() {
+  const posts = (await getPublishedPosts()).slice(0, 3);
   return (
     <section className="bg-surface-2 py-16 sm:py-24">
       <Container className="max-w-3xl">

@@ -5,7 +5,7 @@ import { siteConfig } from "@/config/site";
 import { canRequestDemo, getPublicProducts, isAvailable } from "@/content/products";
 import { getPublishedServices } from "@/content/services";
 import { homeFaqs, industries } from "@/content/industries";
-import { getPublishedPosts } from "@/content/blog/posts";
+import { getPublishedPosts } from "@/lib/blog/posts";
 import { quoteServiceOptions } from "@/content/form-options";
 import { pageMetadata } from "@/lib/seo";
 import { ArrowIcon, ButtonLink } from "@/components/ui/button";
@@ -89,7 +89,7 @@ const tabNames: Record<string, string> = {
   "inventory-management-software-kenya": "Inventory",
 };
 
-export default function HomePage() {
+export default async function HomePage() {
   const products = getPublicProducts();
   const showcase: ShowcaseItem[] = products.filter(isAvailable).map((p) => ({
     slug: p.slug,
@@ -112,7 +112,7 @@ export default function HomePage() {
   const comingSoon = products.filter((p) => !isAvailable(p));
   const marketing = getPublishedServices("digital_marketing");
   const web = getPublishedServices("web_development");
-  const posts = getPublishedPosts().slice(0, 3);
+  const posts = (await getPublishedPosts()).slice(0, 3);
   const free = siteConfig.offersFreeConsultation;
 
   return (
@@ -149,7 +149,7 @@ export default function HomePage() {
                 ))}
               </ul>
             </div>
-            <HeroScene products={sceneProducts} className="-mx-4 h-[24rem] sm:-mx-6 sm:h-[28rem] lg:mx-0 lg:-mr-8 lg:h-auto lg:min-h-[40rem]" />
+            <HeroScene products={sceneProducts} className="-mx-4 h-[27rem] sm:-mx-6 sm:h-[31rem] lg:mx-0 lg:-mr-8 lg:h-auto lg:min-h-[40rem]" />
           </Container>
         </div>
 
@@ -252,7 +252,7 @@ export default function HomePage() {
         />
         <div className="mt-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-xl)]">
-            <Image src="/images/seo.jpg" alt="Laptop showing a website analytics dashboard" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+            <Image src="/images/seo.webp" alt="Laptop showing a sales analytics dashboard on an office desk" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
           </div>
           <div>
             <h3 className="text-[1.75rem] font-black tracking-tight text-heading">Digital marketing</h3>
@@ -276,7 +276,7 @@ export default function HomePage() {
         <div className="mt-16 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="lg:order-2">
             <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-xl)]">
-              <Image src="/images/web-design.jpg" alt="Developer workspace with code on multiple screens" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+              <Image src="/images/web-design.webp" alt="Developer writing code at a desktop computer in a modern office" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
             </div>
           </div>
           <div className="lg:order-1">
@@ -376,7 +376,7 @@ export default function HomePage() {
               items={["A conversation focused on your goals", "Honest advice — even if we're not the right fit", "A clear written proposal if you'd like to proceed"]}
             />
             <div className="relative mt-10 hidden aspect-[16/10] overflow-hidden rounded-[var(--radius-xl)] lg:block">
-              <Image src="/images/about-team.jpg" alt="Two colleagues discussing a project at a desk" fill sizes="40vw" className="object-cover" />
+              <Image src="/images/about-team.webp" alt="Two colleagues reviewing a business plan together at a desk" fill sizes="40vw" className="object-cover" />
             </div>
           </div>
           <div className="self-start rounded-[var(--radius-xl)] border border-line bg-surface p-6 shadow-md sm:p-10">

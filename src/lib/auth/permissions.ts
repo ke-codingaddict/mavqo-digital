@@ -13,10 +13,12 @@ export type Permission =
   /** See Google Ads dashboards and print reports. */
   | "ads:view"
   /** Add/edit client ad accounts and run syncs. */
-  | "ads:manage";
+  | "ads:manage"
+  /** Write, edit, publish and delete blog articles. */
+  | "blog:manage";
 
 const grants: Record<Role, readonly Permission[]> = {
-  admin: ["leads:view", "leads:update", "leads:export", "leads:delete", "audit:view", "mail:use", "settings:manage", "ads:view", "ads:manage"],
+  admin: ["leads:view", "leads:update", "leads:export", "leads:delete", "audit:view", "mail:use", "settings:manage", "ads:view", "ads:manage", "blog:manage"],
   sales: ["leads:view", "leads:update", "mail:use", "ads:view"],
 };
 

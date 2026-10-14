@@ -2,18 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Inbox, Mail, Megaphone, Settings } from "lucide-react";
+import { Inbox, Mail, Megaphone, Newspaper, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/admin/leads/", label: "Leads", icon: Inbox, key: "leads" },
   { href: "/admin/mail/", label: "Mail", icon: Mail, key: "mail" },
   { href: "/admin/ads/", label: "Google Ads", icon: Megaphone, key: "ads" },
+  { href: "/admin/blog/", label: "Blog", icon: Newspaper, key: "blog" },
   { href: "/admin/settings/", label: "Settings", icon: Settings, key: "settings" },
 ] as const;
 
 /** Primary admin navigation with the current section highlighted. */
-export function AdminNav({ show, unread }: { show: { mail: boolean; ads: boolean; settings: boolean }; unread: number }) {
+export function AdminNav({ show, unread }: { show: { mail: boolean; ads: boolean; blog: boolean; settings: boolean }; unread: number }) {
   const pathname = usePathname();
   return (
     <nav aria-label="Admin" className="flex items-center gap-1">

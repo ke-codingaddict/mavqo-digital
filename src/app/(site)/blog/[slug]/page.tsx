@@ -1,10 +1,10 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Clock, Info } from "lucide-react";
-import type { BlogBlock } from "@/content/types";
-import { getPost, getPublishedPosts } from "@/content/blog/posts";
+import { Clock } from "lucide-react";
+import { getPost, getPublishedPosts } from "@/lib/blog/posts";
 import { articleJsonLd, pageMetadata } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 import { Badge, Container } from "@/components/ui/primitives";
@@ -12,15 +12,17 @@ import { ArrowIcon, ButtonLink } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/sections/breadcrumbs";
 import { BlogCard } from "@/components/sections/cards";
 import { JsonLd } from "@/components/seo/json-ld";
+import { ArticleBody } from "@/components/sections/article-body";
+import { ArticleSkeleton } from "@/components/sections/page-skeleton";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return getPublishedPosts().map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getPublishedPosts()).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = getPost((await params).slug);
+  const post = await getPost((await params).slug);
   if (!post) return {};
   return pageMetadata({
     title: post.seoTitle,
@@ -32,45 +34,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-function Block({ block }: { block: BlogBlock }) {
-  switch (block.type) {
-    case "p":
-      return <p>{block.text}</p>;
-    case "h2":
-      return <h2>{block.text}</h2>;
-    case "h3":
-      return <h3>{block.text}</h3>;
-    case "ul":
-      return (
-        <ul>
-          {block.items.map((i) => (
-            <li key={i}>{i}</li>
-          ))}
-        </ul>
-      );
-    case "ol":
-      return (
-        <ol>
-          {block.items.map((i) => (
-            <li key={i}>{i}</li>
-          ))}
-        </ol>
-      );
-    case "callout":
-      return (
-        <aside className="flex gap-3 rounded-[var(--radius-md)] border-l-4 border-teal bg-teal-wash p-5 text-heading">
-          <Info aria-hidden="true" className="mt-1 size-5 shrink-0 text-teal-ink" />
-          <p>{block.text}</p>
-        </aside>
-      );
-  }
+export default function BlogPostPage({ params }: Props) {
+  // URL-dependent content stays behind Suspense so navigations are instant;
+  // prerendered articles still ship full HTML.
+  return (
+    <Suspense fallback={<ArticleSkeleton />}>
+      <BlogPostContent params={params} />
+    </Suspense>
+  );
 }
 
-export default async function BlogPostPage({ params }: Props) {
-  const post = getPost((await params).slug);
+async function BlogPostContent({ params }: Props) {
+  const post = await getPost((await params).slug);
   if (!post) notFound();
   const path = `/blog/${post.slug}/`;
-  const more = getPublishedPosts().filter((p) => p.slug !== post.slug).slice(0, 2);
+  const more = (await getPublishedPosts()).filter((p) => p.slug !== post.slug).slice(0, 2);
 
   return (
     <>
@@ -97,11 +75,7 @@ export default async function BlogPostPage({ params }: Props) {
           </Container>
         </header>
         <Container className="max-w-3xl py-12 sm:py-16">
-          <div className="prose-mavqo">
-            {post.body.map((block, i) => (
-              <Block key={i} block={block} />
-            ))}
-          </div>
+          <ArticleBody blocks={post.body} />
           <div className="mt-14 flex flex-col items-start gap-5 rounded-[var(--radius-xl)] bg-inverse p-8 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-lg font-bold text-on-inverse">Want help putting this into practice?</p>
             <ButtonLink href={post.relatedHref.href} variant="accent">

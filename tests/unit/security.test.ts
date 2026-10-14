@@ -14,6 +14,8 @@ describe("permissions", () => {
     expect(can("sales", "leads:view")).toBe(true);
     expect(can("sales", "leads:update")).toBe(true);
     expect(can("sales", "leads:export")).toBe(false);
+    expect(can("sales", "blog:manage")).toBe(false);
+    expect(can("admin", "blog:manage")).toBe(true);
     expect(can("sales", "leads:delete")).toBe(false);
   });
   it("gives admins every permission", () => {

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getPublishedPosts } from "@/content/blog/posts";
+import { getPublishedPosts } from "@/lib/blog/posts";
 import { pageMetadata } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 import { Container } from "@/components/ui/primitives";
@@ -15,8 +15,8 @@ export const metadata = pageMetadata({
   path: "/blog/",
 });
 
-export default function BlogIndexPage() {
-  const [featured, ...rest] = getPublishedPosts();
+export default async function BlogIndexPage() {
+  const [featured, ...rest] = await getPublishedPosts();
   return (
     <Container className="py-8 sm:py-12">
       <Breadcrumbs crumbs={[{ name: "Blog", path: "/blog/" }]} />

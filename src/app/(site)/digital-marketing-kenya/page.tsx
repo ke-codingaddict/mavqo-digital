@@ -31,7 +31,7 @@ export default function DigitalMarketingPage() {
         eyebrow="Digital marketing"
         title="Marketing that's measured in enquiries, not likes"
         intro="We help Kenyan businesses get found, win attention and turn it into conversations — through SEO, Google Ads, social media and conversion optimization."
-        image={{ src: "/images/google-ads.jpg", alt: "Team planning a marketing campaign with sticky notes" }}
+        image={{ src: "/images/google-ads.webp", alt: "Two colleagues planning a campaign with sticky notes on a glass wall" }}
         actions={
           <>
             <ButtonLink href="/request-quote/?service=seo-services-kenya" size="lg">

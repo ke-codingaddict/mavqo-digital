@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -14,6 +15,7 @@ import { FaqSection } from "@/components/sections/faq";
 import { SectionNav } from "@/components/sections/section-nav";
 import { JsonLd } from "@/components/seo/json-ld";
 import { LeadForm } from "@/components/forms/lead-form";
+import { PageHeroSkeleton } from "@/components/sections/page-skeleton";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -34,7 +36,17 @@ const pricingCopy = {
     "Pricing depends on the modules you choose, your number of users or branches, and the support you need. After your demo you'll get a clear, written quote — no hidden costs.",
 };
 
-export default async function ProductPage({ params }: Props) {
+export default function ProductPage({ params }: Props) {
+  // The page depends on the URL, so it sits behind Suspense: client navigations
+  // show the skeleton instantly, while prerendered slugs still ship full HTML.
+  return (
+    <Suspense fallback={<PageHeroSkeleton />}>
+      <ProductContent params={params} />
+    </Suspense>
+  );
+}
+
+async function ProductContent({ params }: Props) {
   const product = getProduct((await params).slug);
   if (!product) notFound();
 

@@ -291,7 +291,7 @@ export const products: Product[] = [
     shortName: "Business Suite",
     slug: "business-management-software-kenya",
     icon: "business",
-    image: { src: "/images/business.jpg", alt: "Smiling business owner in her workplace" },
+    image: { src: "/images/business.webp", alt: "Smiling small-business owner in an apron in her plant shop" },
     industry: "SMEs & Growing Businesses",
     summary:
       "An all-in-one suite to run sales, stock, customers and reporting for growing businesses.",

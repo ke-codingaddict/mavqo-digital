@@ -1,5 +1,10 @@
 import type { BlogPost } from "../types";
 
+/**
+ * Built-in articles that ship with the site. Articles written in the admin live
+ * in the database; src/lib/blog/posts.ts merges both for public pages.
+ */
+
 export const posts: BlogPost[] = [
   {
     slug: "how-to-choose-school-management-system-kenya",
@@ -7,7 +12,7 @@ export const posts: BlogPost[] = [
     excerpt:
       "Before you sign up for any school management software, use this checklist to compare systems on what actually matters: fees, exams, data, training and support.",
     category: "Education",
-    image: { src: "/images/school-student.jpg", alt: "Student writing at a classroom desk" },
+    image: { src: "/images/school-student.webp", alt: "Schoolgirl writing in her exercise book with a pencil at her desk" },
     author: "Mavqo Digital Team",
     publishedAt: "2026-10-13",
     readingMinutes: 6,
@@ -53,7 +58,7 @@ export const posts: BlogPost[] = [
     excerpt:
       "Confused about what you're paying for when you hire someone to run Google Ads? Here's the difference between ad spend and management fees — and what to ask before you sign.",
     category: "Digital Marketing",
-    image: { src: "/images/seo.jpg", alt: "Laptop showing an analytics dashboard" },
+    image: { src: "/images/seo.webp", alt: "Laptop showing a sales analytics dashboard on an office desk" },
     author: "Mavqo Digital Team",
     publishedAt: "2026-10-13",
     readingMinutes: 5,
@@ -88,7 +93,7 @@ export const posts: BlogPost[] = [
     excerpt:
       "Great content can't rank if search engines struggle to crawl your site. These technical SEO basics are the foundation every business website should get right.",
     category: "SEO",
-    image: { src: "/images/web-design.jpg", alt: "Code on computer screens" },
+    image: { src: "/images/web-design.webp", alt: "Developer writing code at a desktop computer in a modern office" },
     author: "Mavqo Digital Team",
     publishedAt: "2026-10-13",
     readingMinutes: 6,
@@ -122,13 +127,3 @@ export const posts: BlogPost[] = [
     ],
   },
 ];
-
-export function getPublishedPosts() {
-  return posts
-    .filter((p) => p.published)
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
-}
-
-export function getPost(slug: string) {
-  return getPublishedPosts().find((p) => p.slug === slug);
-}

@@ -111,7 +111,19 @@ export function FormMessage({ state }: { state: { status: string; message?: stri
 }
 
 /** Accessible on/off switch backed by a checkbox, so it submits with the form. */
-export function Switch({ name, defaultChecked, label, description }: { name: string; defaultChecked?: boolean; label: string; description?: string }) {
+export function Switch({
+  name,
+  defaultChecked,
+  label,
+  description,
+  onCheckedChange,
+}: {
+  name: string;
+  defaultChecked?: boolean;
+  label: string;
+  description?: string;
+  onCheckedChange?: (checked: boolean) => void;
+}) {
   const id = `sw-${name}`;
   return (
     <div className="flex items-start justify-between gap-6">
@@ -120,7 +132,15 @@ export function Switch({ name, defaultChecked, label, description }: { name: str
         {description && <p className="mt-0.5 text-sm text-ink-soft">{description}</p>}
       </div>
       <span className="relative inline-flex shrink-0">
-        <input id={id} name={name} type="checkbox" role="switch" defaultChecked={defaultChecked} className="peer sr-only" />
+        <input
+          id={id}
+          name={name}
+          type="checkbox"
+          role="switch"
+          defaultChecked={defaultChecked}
+          onChange={onCheckedChange && ((e) => onCheckedChange(e.currentTarget.checked))}
+          className="peer sr-only"
+        />
         <span
           aria-hidden="true"
           className="h-6 w-11 rounded-full bg-line-strong transition-colors peer-checked:bg-teal peer-focus-visible:ring-4 peer-focus-visible:ring-teal/25"

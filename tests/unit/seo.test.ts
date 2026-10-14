@@ -1,6 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { breadcrumbJsonLd, organizationJsonLd, pageMetadata, softwareJsonLd } from "@/lib/seo";
 import sitemap from "@/app/sitemap";
+import { posts } from "@/content/blog/posts";
+
+// The real blog store reads the database through Next's cache; the built-in articles stand in here.
+vi.mock("@/lib/blog/posts", async () => {
+  const { posts } = await import("@/content/blog/posts");
+  return { getPublishedPosts: async () => posts.filter((p) => p.published) };
+});
 
 describe("pageMetadata", () => {
   afterEach(() => vi.unstubAllEnvs());
@@ -41,11 +48,12 @@ describe("structured data", () => {
 });
 
 describe("sitemap", () => {
-  it("includes key pages and excludes private ones", () => {
-    const urls = sitemap().map((e) => new URL(e.url).pathname);
+  it("includes key pages and excludes private ones", async () => {
+    const urls = (await sitemap()).map((e) => new URL(e.url).pathname);
     expect(urls).toContain("/");
     expect(urls).toContain("/software/school-management-system-kenya/");
     expect(urls).toContain("/digital-marketing-kenya/seo-services-kenya/");
+    expect(urls).toContain(`/blog/${posts[0].slug}/`);
     expect(urls.some((u) => u.startsWith("/admin") || u.startsWith("/thank-you"))).toBe(false);
     expect(new Set(urls).size).toBe(urls.length);
   });

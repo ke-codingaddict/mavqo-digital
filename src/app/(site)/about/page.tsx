@@ -33,7 +33,7 @@ export default function AboutPage() {
           </>
         }
         intro="We're a technology company helping Kenyan organizations improve how they operate and grow online — with practical business software, professional websites and results-focused marketing."
-        image={{ src: "/images/about-team.jpg", alt: "Two colleagues discussing a project at a desk" }}
+        image={{ src: "/images/about-team.webp", alt: "Two colleagues reviewing a business plan together at a desk" }}
       />
       <Section labelledBy="mission-heading">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
@@ -80,7 +80,7 @@ export default function AboutPage() {
             </ButtonLink>
           </div>
           <div className="relative hidden aspect-[4/3] h-full lg:block">
-            <Image src="/images/social.jpg" alt="" fill sizes="45vw" className="object-cover" />
+            <Image src="/images/social.webp" alt="" fill sizes="45vw" className="object-cover" />
           </div>
         </div>
       </Section>
