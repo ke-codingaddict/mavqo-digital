@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cacheLife } from "next/cache";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { siteConfig } from "@/config/site";
+import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { siteConfig, whatsappLink } from "@/config/site";
 import { getPublicProducts } from "@/content/products";
 import { getPublishedServices } from "@/content/services";
 import { Container } from "@/components/ui/primitives";
@@ -42,9 +42,10 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
 }
 
 export function SiteFooter() {
-  const { email, phone, location, businessHours } = siteConfig.contact;
+  const { email, phone, phoneDisplay, location, businessHours } = siteConfig.contact;
   const socials = (Object.keys(siteConfig.social) as (keyof typeof siteConfig.social)[]).filter((k) => siteConfig.social[k]);
-  const hasContact = Boolean(email || phone || location || businessHours);
+  const wa = whatsappLink("Hi Mavqo Digital, I'd like to know more about your services.");
+  const hasContact = Boolean(email || phone || wa || location || businessHours);
 
   return (
     <footer className="bg-inverse text-on-inverse-soft">
@@ -75,7 +76,15 @@ export function SiteFooter() {
                   <li className="flex items-center gap-3">
                     <Phone aria-hidden="true" className="size-4 text-teal" />
                     <TrackedContactLink kind="phone" href={`tel:${phone}`} className="hover:text-on-inverse">
-                      {phone}
+                      {phoneDisplay}
+                    </TrackedContactLink>
+                  </li>
+                )}
+                {wa && (
+                  <li className="flex items-center gap-3">
+                    <MessageCircle aria-hidden="true" className="size-4 text-teal" />
+                    <TrackedContactLink kind="whatsapp" href={wa} className="hover:text-on-inverse">
+                      Chat on WhatsApp
                     </TrackedContactLink>
                   </li>
                 )}
@@ -114,6 +123,7 @@ export function SiteFooter() {
               title="Company"
               links={[
                 { label: "About us", href: "/about/" },
+                { label: "Company profile", href: "/company-profile/" },
                 { label: "Industries", href: "/industries/" },
                 { label: "Guides & articles", href: "/blog/" },
                 { label: "Contact", href: "/contact/" },

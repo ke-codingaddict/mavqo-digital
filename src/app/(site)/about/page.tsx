@@ -5,6 +5,7 @@ import { pageMetadata } from "@/lib/seo";
 import { ArrowIcon, ButtonLink } from "@/components/ui/button";
 import { Section, SectionHeading } from "@/components/ui/primitives";
 import { PageHero } from "@/components/sections/page-hero";
+import { CompanyProfileSection } from "@/components/sections/company-profile-section";
 
 export const metadata = pageMetadata({
   title: "About Us",
@@ -66,7 +67,8 @@ export default function AboutPage() {
           ))}
         </ul>
       </Section>
-      <Section labelledBy="cta-heading">
+      <CompanyProfileSection tone="canvas" />
+      <Section tone="muted" labelledBy="cta-heading">
         <div className="grid items-center gap-10 overflow-hidden rounded-[var(--radius-xl)] bg-inverse lg:grid-cols-2">
           <div className="p-8 sm:p-12">
             <h2 id="cta-heading" className="text-h2 !text-on-inverse">

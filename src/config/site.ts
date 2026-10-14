@@ -20,14 +20,16 @@ export const siteConfig = {
 
   contact: {
     /** e.g. "hello@mavqodigital.co.ke" — only once the domain's mailbox is live */
-    email: null as string | null,
+    email: "sales@mavqo.ke" as string | null,
     /** International format, e.g. "+254712345678" */
-    phone: null as string | null,
+    phone: "+254718701033" as string | null,
+    /** How `phone` is shown to visitors (the raw `phone` is used for tel: links). */
+    phoneDisplay: "+254 718 701 033",
     /** WhatsApp number in international format without "+", e.g. "254712345678" */
-    whatsapp: null as string | null,
+    whatsapp: "254718701033" as string | null,
     /** e.g. "Nairobi, Kenya" — only a location you actually operate from */
     location: null as string | null,
-    businessHours: null as string | null, // e.g. "Mon–Fri, 8:00am–6:00pm EAT"
+    businessHours: "Office visits Mon–Sat · Online support every day" as string | null,
   },
 
   social: {

@@ -280,7 +280,7 @@ async function PrintableReport({ params, searchParams }: { params: Params; searc
               <ul className="flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-white/75 sm:justify-end">
                 <li>{new URL(siteConfig.url).host}</li>
                 {siteConfig.contact.email && <li>{siteConfig.contact.email}</li>}
-                {siteConfig.contact.phone && <li>{siteConfig.contact.phone}</li>}
+                {siteConfig.contact.phone && <li>{siteConfig.contact.phoneDisplay}</li>}
                 {siteConfig.contact.location && <li>{siteConfig.contact.location}</li>}
               </ul>
             </div>

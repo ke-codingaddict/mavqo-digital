@@ -24,7 +24,7 @@ export function FormPageLayout({
   formTitle: string;
   children: ReactNode;
 }) {
-  const { email, phone } = siteConfig.contact;
+  const { email, phone, phoneDisplay } = siteConfig.contact;
   const wa = whatsappLink("Hi Mavqo Digital, I have a question.");
   const hasDirect = Boolean(email || phone || wa);
 
@@ -61,7 +61,7 @@ export function FormPageLayout({
                 {phone && (
                   <li>
                     <TrackedContactLink kind="phone" href={`tel:${phone}`} className="inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-bold text-heading ring-1 ring-inset ring-line hover:ring-line-strong">
-                      <Phone aria-hidden="true" className="size-4 text-teal-ink" /> {phone}
+                      <Phone aria-hidden="true" className="size-4 text-teal-ink" /> {phoneDisplay}
                     </TrackedContactLink>
                   </li>
                 )}

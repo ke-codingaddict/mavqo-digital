@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { breadcrumbJsonLd, organizationJsonLd, pageMetadata, softwareJsonLd } from "@/lib/seo";
 import sitemap from "@/app/sitemap";
+import { siteConfig } from "@/config/site";
 import { posts } from "@/content/blog/posts";
 
 // The real blog store reads the database through Next's cache; the built-in articles stand in here.
@@ -38,8 +39,15 @@ describe("structured data", () => {
     const json = JSON.stringify([organizationJsonLd(), softwareJsonLd({ name: "x", description: "y", path: "/", category: "z" })]);
     expect(json).not.toMatch(/aggregateRating|review|"offers"|"price"/i);
   });
-  it("omits contact details that are not configured", () => {
-    expect(organizationJsonLd()).not.toHaveProperty("contactPoint");
+  it("publishes only the configured contact details", () => {
+    const { email, phone } = siteConfig.contact;
+    expect(organizationJsonLd().contactPoint).toEqual({
+      "@type": "ContactPoint",
+      contactType: "sales",
+      areaServed: "KE",
+      email,
+      telephone: phone,
+    });
   });
   it("builds ordered breadcrumbs with absolute URLs", () => {
     const b = breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Software", path: "/software/" }]);
